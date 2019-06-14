@@ -28,6 +28,7 @@ forCloud.files = {}
 
         card.classList.add('mdl-card')
         card.classList.add('mdl-shadow--2dp')
+        card.style.display = "inline-block"
 
         const titleContainer = document.createElement('div')
 
