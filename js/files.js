@@ -3,7 +3,8 @@
 forCloud.files = {}
 
 {
-  async function createFile (name, content, path) {
+  async function createFile (name, content, path, type) {
+    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
     return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
   }
 
@@ -45,6 +46,13 @@ forCloud.files = {}
           card.addEventListener('click', () => {
             render(folderPath)
           })
+        } else {
+          card.addEventListener('click', () => {
+            if (file.val().type === "document") {
+              location.assign("../docs/index.html?file=" + encodeURI(file.ref_.path.pieces_))
+            }
+          })
+          
         }
 
         titleContainer.appendChild(title)
