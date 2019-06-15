@@ -5,10 +5,24 @@ forCloud.files = {}
 {
 
   async function deleteFile (path) {
-    alert(path)
     let deleteRef = firebase.database().ref().child(path)
     deleteRef.remove()
     forCloud.files.render()
+  }
+
+  async function renameFile (file, path) {
+    let name = prompt("Enter a new name")
+    let filePath = file.ref_.path.pieces_
+    filePath = filePath.slice(3)
+    filePath.pop()
+    if (filePath.length < 1) {
+      filePath = ["/"]
+    }
+    if (file.val().folder !== true) {
+      createFile(name, file.val().content, filePath.toString().split(",").join("/"), file.val().type)
+      forCloud.files.deleteFile('/' + file.ref_.path.pieces_.toString().split(",").join("/"))
+    } 
+    forCloud.files.render(filePath.toString().split(",").join("/"))
   }
 
   async function createFile (name, content, path, type) {
@@ -62,14 +76,29 @@ forCloud.files = {}
         })
         deleteButtonAction.textContent = "Delete"
         deleteButton.appendChild(deleteButtonAction)
+        if (!file.val().folder) {
+          const renameButtonAction = document.createElement('a')
+          renameButtonAction.classList.add('mdl-button')
+          renameButtonAction.classList.add('mdl-button--colored')
+          renameButtonAction.classList.add('mdl-js-button')
+          renameButtonAction.classList.add('mdl-js-ripple-effect')
+          renameButtonAction.addEventListener("click", (event) => {
+            event.preventDefault()
+            forCloud.files.renameFile(file, file.ref_.path.pieces_.toString().split(",").join("/"))
+          })
+          renameButtonAction.textContent = "Rename"
+          deleteButton.appendChild(renameButtonAction)
+        }
+        deleteButtonAction.textContent = "Delete"
+        deleteButton.appendChild(deleteButtonAction)
         if (file.val().folder) {
           const folderPath = file.ref_.path.pieces_.splice(3).join('/')
 
-          card.addEventListener('click', () => {
+          titleContainer.addEventListener('click', () => {
             render(folderPath)
           })
         } else {
-          card.addEventListener('click', () => {
+          titleContainer.addEventListener('click', () => {
             if (file.val().type === 'document') {
               location.assign('../docs/index.html?file=' + encodeURI(file.ref_.path.pieces_))
             } else if (file.val().type === 'spreadsheet') {
@@ -92,6 +121,7 @@ forCloud.files = {}
   forCloud.files.createFolder = createFolder
   forCloud.files.render = render
   forCloud.files.deleteFile = deleteFile
+  forCloud.files.renameFile = renameFile
 }
 
 firebase.auth().onAuthStateChanged(() => {
