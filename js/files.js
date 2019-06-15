@@ -50,6 +50,8 @@ forCloud.files = {}
           card.addEventListener('click', () => {
             if (file.val().type === "document") {
               location.assign("../docs/index.html?file=" + encodeURI(file.ref_.path.pieces_))
+            } else if (file.val().type === "spreadsheet") {
+              location.assign("../sheets/index.html?file=" + encodeURI(file.ref_.path.pieces_))
             }
           })
           

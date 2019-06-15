@@ -22,9 +22,9 @@ function getQueryVariable (variable) {
 
     async function saveDocument () {
         if (getQueryVariable('file') !== false) {
-            firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').set($('document-editor').value)
+            firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt($('document-editor').value))
         } else {
-            createFile($('document-name').value, $('document-editor').value, '/', 'document').then(() => {
+            createFile($('document-name').value, forCloud.encrypt($('document-editor').value), '/', 'document').then(() => {
               location.assign('../files/index.html')
             })
         }
@@ -41,7 +41,7 @@ $('save-document').addEventListener('click', () => {
 firebase.auth().onAuthStateChanged(() => {
     if (getQueryVariable('file') !== false) {
         firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').on('value', (snapshot) => {
-            $('document-editor').innerHTML = snapshot.val()
+            $('document-editor').innerHTML = forCloud.decrypt(snapshot.val())
             $('document-name-label').style.display = 'none'
             $('document-editor-label').style.display = 'none'
         })

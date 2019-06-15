@@ -83,6 +83,14 @@ const forCloud = {}
 
   // Misc. functions.
 
+  function encrypt(content) {
+    return CryptoJS.AES.encrypt(content, firebase.auth().currentUser.uid) + ""
+  }
+
+  function decrypt(content) {
+    return CryptoJS.AES.decrypt(content, firebase.auth().currentUser.uid).toString(CryptoJS.enc.Utf8);
+  }
+
   async function selectFile () {
     const selector = document.createElement('input')
 
@@ -122,6 +130,8 @@ const forCloud = {}
 
   forCloud.get = get
   forCloud.store = store
+  forCloud.encrypt = encrypt
+  forCloud.decrypt = decrypt
 
   forCloud.signIn = signIn
   forCloud.signOut = signOut

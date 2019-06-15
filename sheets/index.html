@@ -16,8 +16,8 @@
           <nav class="mdl-navigation mdl-layout--large-screen-only">
             <a class="mdl-navigation__link" href="../chat/index.html">Chat</a>
             <a class="mdl-navigation__link" href="../files/index.html">Files</a>
-            <a class="mdl-navigation__link">Docs</a>
-            <a class="mdl-navigation__link" href="../sheets/index.html">Sheets</a>
+            <a class="mdl-navigation__link" href="../docs/index.html">Docs</a>
+            <a class="mdl-navigation__link">Sheets</a>
             <a class="mdl-navigation__link" href="../slides/index.html">Slides</a>
             <a class="mdl-navigation__link" href="../sign-out/index.html">Sign Out</a>
             <div class="mdl-layout-spacer"></div>
@@ -29,28 +29,51 @@
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="../chat/index.html">Chat</a>
           <a class="mdl-navigation__link" href="../files/index.html">Files</a>
-          <a class="mdl-navigation__link">Docs</a>
-          <a class="mdl-navigation__link" href="../sheets/index.html">Sheets</a>
+          <a class="mdl-navigation__link" href="../docs/index.html">Docs</a>
+          <a class="mdl-navigation__link">Sheets</a>
           <a class="mdl-navigation__link" href="../slides/index.html">Slides</a>
           <a class="mdl-navigation__link" href="../sign-out/index.html">Sign Out</a>
         </nav>
       </div>
       <main class="mdl-layout__content">
         <div class="page-content mdl-typography--text-center">
-          <h3>Documents</h3>
+          <h3>Spreadsheets</h3>
 
-          <div id="document-name-label" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="document-name" autofocus>
-            <label class="mdl-textfield__label" for="document-name">Document Name</label>
+          <div id="spreadsheet-name-label" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="spreadsheet-name" autofocus>
+            <label class="mdl-textfield__label" for="spreadsheet-name">Spreadsheet Name</label>
           </div>
           <br>
-          <div class="mdl-textfield mdl-js-textfield">
-            <textarea class="mdl-textfield__input" type="text" rows= "10" id="document-editor"></textarea>
-            <label class="mdl-textfield__label" id="document-editor-label" for="document-editor">Document Content</label>
-          </div>
           <br>
-          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="save-document">
-            Save Document
+          <table style="width: 100%; outline: none;" contenteditable="true" id="sheets-editor">
+            <tr>
+              <th>Value</th>
+              <th>Value</th>
+              <th>Value</th>
+            </tr>
+            <tr>
+              <th>Value</th>
+              <th>Value</th>
+              <th>Value</th>
+            </tr>
+            <tr>
+              <th>Value</th>
+              <th>Value</th>
+              <th>Value</th>
+            </tr>
+            <tr>
+              <th>Value</th>
+              <th>Value</th>
+              <th>Value</th>
+            </tr>
+          </table>
+          <br>
+          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="add-row">New Row</button>
+          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="add-column">New Column</button>
+          <br>
+          <br>
+          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="save-spreadsheet">
+            Save Spreadsheet
           </button>
         </div>
       </main>
@@ -63,7 +86,7 @@
 
     <script src="../js/core.js"></script>
     <script src="../js/home.js"></script>
-    <script src="../js/docs.js"></script>
+    <script src="../js/sheets.js"></script>
     <script src="../js/aes.js"></script>
   </body>
 </html>
