@@ -16,7 +16,7 @@ forCloud.files = {}
     if (file.val().type === 'file') {
       storageRef.child(file.val().content).delete()
     }
-    forCloud.files.render()
+    forCloud.files.render('/')
   }
 
   function uploadFile() {
@@ -81,7 +81,7 @@ forCloud.files = {}
 
         const title = document.createElement('h4')
         title.textContent = file.key
-
+        const folderTitle = file.key
         const deleteButton = document.createElement('div')
         deleteButton.classList.add('mdl-card_actions')
         deleteButton.classList.add('mdl-card--border')
@@ -92,7 +92,11 @@ forCloud.files = {}
         deleteButtonAction.classList.add('mdl-js-ripple-effect')
         deleteButtonAction.addEventListener('click', (event) => {
           event.preventDefault()
-          forCloud.files.deleteFile(file.ref_.path.pieces_.toString().split(',').join('/'), file)
+          if (!file.val().folder) {
+            forCloud.files.deleteFile(file.ref_.path.pieces_.toString().split(',').join('/'), file)
+          } else {
+            forCloud.files.deleteFile(value.ref_.path.pieces_.join('/') + '/' + folderTitle, file)
+          }
         })
         deleteButtonAction.textContent = 'Delete'
         deleteButton.appendChild(deleteButtonAction)
