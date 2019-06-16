@@ -1,13 +1,30 @@
 'use strict'
 
+const storageRef = firebase.storage().ref();
 forCloud.files = {}
 
 {
 
-  async function deleteFile (path) {
+  async function deleteFile (path, file) {
     let deleteRef = firebase.database().ref().child(path)
     deleteRef.remove()
+    if (file.val().type === 'file') {
+      storageRef.child(file.val().content).delete()
+    }
     forCloud.files.render()
+  }
+
+  function uploadFile() {
+    forCloud.selectFile().then((fileList) => {
+      const file = fileList[0]
+      const fileName = file.name.replace(/[^\w\s]/gi, '')
+      const fileRef = storageRef.child(firebase.auth().currentUser.uid).child(fileName)
+      const filePath = firebase.auth().currentUser.uid + '/' + fileName
+      console.log(file)
+      fileRef.put(file).then((snapshot) => {
+        createFile(fileName, filePath, '/', 'file')
+      })
+    })
   }
 
   async function renameFile (file, path) {
@@ -59,7 +76,6 @@ forCloud.files = {}
         titleContainer.classList.add('mdl-card--expand')
 
         const title = document.createElement('h4')
-
         title.textContent = file.key
 
         const deleteButton = document.createElement('div')
@@ -72,7 +88,7 @@ forCloud.files = {}
         deleteButtonAction.classList.add('mdl-js-ripple-effect')
         deleteButtonAction.addEventListener("click", (event) => {
           event.preventDefault()
-          forCloud.files.deleteFile(file.ref_.path.pieces_.toString().split(",").join("/"))
+          forCloud.files.deleteFile(file.ref_.path.pieces_.toString().split(",").join("/"), file)
         })
         deleteButtonAction.textContent = "Delete"
         deleteButton.appendChild(deleteButtonAction)
@@ -103,6 +119,10 @@ forCloud.files = {}
               location.assign('../docs/index.html?file=' + encodeURI(file.ref_.path.pieces_))
             } else if (file.val().type === 'spreadsheet') {
               location.assign('../sheets/index.html?file=' + encodeURI(file.ref_.path.pieces_))
+            } else if (file.val().type === 'file') {
+              storageRef.child(file.val().content).getDownloadURL().then(url => {
+                window.open(url)
+              })
             }
           })
           
@@ -116,6 +136,8 @@ forCloud.files = {}
           card.appendChild(forCloud.createIcon('table_chart', '50px'))
         } else if (file.val().folder) {
           card.appendChild(forCloud.createIcon('folder', '50px'))
+        } else if (file.val().type === 'file') {
+          card.appendChild(forCloud.createIcon('description', '50px'))
         }
         card.appendChild(deleteButton)
         $('files').appendChild(card)
@@ -128,6 +150,7 @@ forCloud.files = {}
   forCloud.files.render = render
   forCloud.files.deleteFile = deleteFile
   forCloud.files.renameFile = renameFile
+  forCloud.files.uploadFile = uploadFile
 }
 
 firebase.auth().onAuthStateChanged(() => {
