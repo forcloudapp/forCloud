@@ -110,8 +110,14 @@ forCloud.files = {}
 
         titleContainer.appendChild(title)
         card.appendChild(titleContainer)
+        if (file.val().type === 'document') {
+          card.appendChild(forCloud.createIcon('edit', '50px'))
+        } else if (file.val().type === 'spreadsheet') {
+          card.appendChild(forCloud.createIcon('table_chart', '50px'))
+        } else if (file.val().folder) {
+          card.appendChild(forCloud.createIcon('folder', '50px'))
+        }
         card.appendChild(deleteButton)
-
         $('files').appendChild(card)
       })
     })

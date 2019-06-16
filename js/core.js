@@ -83,6 +83,15 @@ const forCloud = {}
 
   // Misc. functions.
 
+  function createIcon (icon, size) {
+    let i = document.createElement('i')
+    i.className = 'material-icons'
+    i.style.fontSize = size
+    let text = document.createTextNode(icon)
+    i.appendChild(text)
+    return i
+  }
+  
   function encrypt(content) {
     return CryptoJS.AES.encrypt(content, firebase.auth().currentUser.uid) + ""
   }
@@ -138,6 +147,7 @@ const forCloud = {}
   forCloud.signUp = signUp
   forCloud.stringifyUsername = stringifyUsername
   forCloud.parseEmail = parseEmail
+  forCloud.createIcon = createIcon
 
   forCloud.selectFile = selectFile
   forCloud.pickColor = pickColor
