@@ -7,7 +7,21 @@ forCloud.files = {}
 
   function moveFile(path, file) {
     forCloud.files.createFile(file.key, file.val().content, path, file.val().type)
-    forCloud.files.deleteFile('/' + file.ref_.path.pieces_.toString().split(',').join('/'))
+    forCloud.files.deleteFile('/' + file.ref.path.toString(), file)
+  }
+
+  function moveFolder(path, file, folderName, filePath) {
+    if (typeof file.val().files !== 'undefined') {
+      firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(folderName).set({
+        folder: true,
+        files: file.val().files
+      })
+    } else {
+      firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(folderName).set({
+        folder: true,
+      })
+    }
+    forCloud.files.deleteFile('/' + filePath)
   }
 
   async function deleteFile(path, file) {
@@ -39,11 +53,27 @@ forCloud.files = {}
     if (filePath.length < 1) {
       filePath = ['/']
     }
-    if (file.val().folder !== true) {
-      createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type)
-      forCloud.files.deleteFile('/' + file.ref_.path.pieces_.toString().split(',').join('/'))
+    forCloud.files.createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type)
+    forCloud.files.deleteFile('/' + path)
+    forCloud.files.render('/')
+  }
+
+  async function renameFolder(file, path) {
+    let pathArray = path.split('/')
+    pathArray.pop()
+    let name = prompt('Enter a new name')
+    if (typeof file.val().files !== 'undefined') {
+      firebase.database().ref().child(pathArray.join('/')).child(name).set({
+        folder: true,
+        files: file.val().files
+      })
+    } else {
+      firebase.database().ref().child(pathArray.join('/')).child(name).set({
+        folder: true,
+      })
     }
-    forCloud.files.render(filePath.toString().split(',').join('/'))
+    forCloud.files.deleteFile('/' + path)
+    forCloud.files.render('/')
   }
 
   async function createFile(name, content, path, type) {
@@ -68,6 +98,7 @@ forCloud.files = {}
 
     reference.on('value', value => {
       value.forEach(file => {
+        const filePath = file.ref.path.toString()
         const card = document.createElement('div')
 
         card.classList.add('mdl-card')
@@ -91,39 +122,31 @@ forCloud.files = {}
         deleteButtonAction.classList.add('mdl-js-button')
         deleteButtonAction.classList.add('mdl-js-ripple-effect')
         deleteButtonAction.addEventListener('click', (event) => {
-          event.preventDefault()
-          if (!file.val().folder) {
-            forCloud.files.deleteFile(file.ref_.path.pieces_.toString().split(',').join('/'), file)
-          } else {
-            forCloud.files.deleteFile(value.ref_.path.pieces_.join('/') + '/' + folderTitle, file)
-          }
+          forCloud.files.deleteFile(filePath, file)
         })
         deleteButtonAction.textContent = 'Delete'
         deleteButton.appendChild(deleteButtonAction)
-        if (!file.val().folder) {
-          const renameButtonAction = document.createElement('a')
-          renameButtonAction.classList.add('mdl-button')
-          renameButtonAction.classList.add('mdl-button--colored')
-          renameButtonAction.classList.add('mdl-js-button')
-          renameButtonAction.classList.add('mdl-js-ripple-effect')
-          renameButtonAction.addEventListener('click', (event) => {
-            event.preventDefault()
-            forCloud.files.renameFile(file, file.ref_.path.pieces_.toString().split(',').join('/'))
-          })
-          renameButtonAction.textContent = 'Rename'
-          deleteButton.appendChild(renameButtonAction)
-
-          const moveButtonAction = document.createElement('a')
-          moveButtonAction.classList.add('mdl-button')
-          moveButtonAction.classList.add('mdl-button--colored')
-          moveButtonAction.classList.add('mdl-js-button')
-          moveButtonAction.classList.add('mdl-js-ripple-effect')
-          moveButtonAction.addEventListener('click', (event) => {
-            forCloud.files.renderMove('/', file)
-          })
-          moveButtonAction.textContent = 'Move File'
-          deleteButton.appendChild(moveButtonAction)
-        }
+        const renameButtonAction = document.createElement('a')
+        renameButtonAction.classList.add('mdl-button')
+        renameButtonAction.classList.add('mdl-button--colored')
+        renameButtonAction.classList.add('mdl-js-button')
+        renameButtonAction.classList.add('mdl-js-ripple-effect')
+        renameButtonAction.addEventListener('click', (event) => {
+          if (!file.val().folder) {
+            forCloud.files.renameFile(file, filePath)
+          } else {
+            forCloud.files.renameFolder(file, filePath)
+          }
+        })
+        renameButtonAction.textContent = 'Rename'
+        deleteButton.appendChild(renameButtonAction)
+        const moveButtonAction = document.createElement('a')
+        moveButtonAction.classList.add('mdl-button')
+        moveButtonAction.classList.add('mdl-button--colored')
+        moveButtonAction.classList.add('mdl-js-button')
+        moveButtonAction.classList.add('mdl-js-ripple-effect')
+        moveButtonAction.addEventListener('click', (event) => {
+          forCloud.files.renderMove('/', file, filePath)
         deleteButtonAction.textContent = 'Delete'
         deleteButton.appendChild(deleteButtonAction)
         if (file.val().folder) {
@@ -164,7 +187,8 @@ forCloud.files = {}
     })
   }
 
-  function renderMove(path, fileToMove) {
+  function renderMove(path, fileToMove, fileToMovePath) {
+    let fileToMoveSplit = fileToMovePath.split('/')
     $('move-file-div').style.display = 'block'
     $('files').style.display = 'none'
     $('move-file').innerHTML = ''
@@ -179,7 +203,7 @@ forCloud.files = {}
 
     reference.on('value', value => {
       value.forEach(file => {
-          if (file.val().folder) {
+        if (file.val().folder && (file.ref.path.toString() !== fileToMovePath)) {
           const card = document.createElement('div')
 
           card.classList.add('mdl-card')
@@ -203,8 +227,12 @@ forCloud.files = {}
           moveButtonAction.classList.add('mdl-js-button')
           moveButtonAction.classList.add('mdl-js-ripple-effect')
           moveButtonAction.addEventListener('click', (event) => {
-            if (fileToMove.ref_.path.pieces_[fileToMove.ref_.path.pieces_.length - 3] !== folderTitle) {
-              forCloud.files.moveFile(value.ref_.path.pieces_.splice(3).join('/') + '/' + folderTitle + '/files/', fileToMove)
+            if (fileToMoveSplit[fileToMoveSplit.length - 3] !== folderTitle) {
+              if (!fileToMove.val().folder) {
+                forCloud.files.moveFile(value.ref_.path.pieces_.splice(3).join('/') + '/' + folderTitle + '/files/', fileToMove)
+              } else {
+                forCloud.files.moveFolder(value.ref_.path.pieces_.splice(3).join('/') + '/' + folderTitle + '/files/', fileToMove, fileToMoveSplit[fileToMoveSplit.length - 1], fileToMovePath)
+              }
             }
           })
           moveButtonAction.textContent = 'Move File'
@@ -233,6 +261,8 @@ forCloud.files = {}
   forCloud.files.renameFile = renameFile
   forCloud.files.uploadFile = uploadFile
   forCloud.files.moveFile = moveFile
+  forCloud.files.moveFolder = moveFolder
+  forCloud.files.renameFolder = renameFolder
 }
 
 firebase.auth().onAuthStateChanged(() => {
