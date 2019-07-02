@@ -147,6 +147,9 @@ forCloud.files = {}
         moveButtonAction.classList.add('mdl-js-ripple-effect')
         moveButtonAction.addEventListener('click', (event) => {
           forCloud.files.renderMove('/', file, filePath)
+        })
+        moveButtonAction.textContent = 'Move'
+        deleteButton.appendChild(moveButtonAction)
         deleteButtonAction.textContent = 'Delete'
         deleteButton.appendChild(deleteButtonAction)
         if (file.val().folder) {
@@ -183,6 +186,75 @@ forCloud.files = {}
         }
         card.appendChild(deleteButton)
         $('files').appendChild(card)
+      })
+    })
+  }
+
+  async function searchRender() {
+    if ($('files-search').value == '') {
+      return forCloud.files.render('/')
+    }
+    $('files').innerHTML = ''
+
+    let reference = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files')
+
+    reference.on('value', value => {
+      if (value.val().folder) {
+        reference = reference.child('files')
+      }
+    })
+
+    reference.on('value', value => {
+      value.forEach(file => {
+        if (file.key.toLowerCase().includes($('files-search').value.toLowerCase())) {
+          const filePath = file.ref.path.toString()
+          const card = document.createElement('div')
+
+          card.classList.add('mdl-card')
+          card.classList.add('mdl-shadow--2dp')
+          card.style.display = 'inline-block'
+
+          const titleContainer = document.createElement('div')
+
+          titleContainer.classList.add('mdl-card__title')
+          titleContainer.classList.add('mdl-card--expand')
+
+          const title = document.createElement('h4')
+          title.textContent = file.key
+          const folderTitle = file.key
+          if (file.val().folder) {
+            const folderPath = file.ref_.path.pieces_.splice(3).join('/')
+
+            titleContainer.addEventListener('click', () => {
+              render(folderPath)
+            })
+          } else {
+            titleContainer.addEventListener('click', () => {
+              if (file.val().type === 'document') {
+                location.assign('../docs/index.html?file=' + encodeURI(file.ref_.path.pieces_))
+              } else if (file.val().type === 'spreadsheet') {
+                location.assign('../sheets/index.html?file=' + encodeURI(file.ref_.path.pieces_))
+              } else if (file.val().type === 'file') {
+                storageRef.child(file.val().content).getDownloadURL().then(url => {
+                  window.open(url)
+                })
+              }
+            })
+          }
+
+          titleContainer.appendChild(title)
+          card.appendChild(titleContainer)
+          if (file.val().type === 'document') {
+            card.appendChild(forCloud.createIcon('edit', '50px'))
+          } else if (file.val().type === 'spreadsheet') {
+            card.appendChild(forCloud.createIcon('table_chart', '50px'))
+          } else if (file.val().folder) {
+            card.appendChild(forCloud.createIcon('folder', '50px'))
+          } else if (file.val().type === 'file') {
+            card.appendChild(forCloud.createIcon('description', '50px'))
+          }
+          $('files').appendChild(card)
+        }
       })
     })
   }
@@ -256,6 +328,7 @@ forCloud.files = {}
   forCloud.files.createFile = createFile
   forCloud.files.createFolder = createFolder
   forCloud.files.render = render
+  forCloud.files.searchRender = searchRender
   forCloud.files.renderMove = renderMove
   forCloud.files.deleteFile = deleteFile
   forCloud.files.renameFile = renameFile
@@ -272,4 +345,8 @@ firebase.auth().onAuthStateChanged(() => {
 $('close-file-move').addEventListener('click', (event) => {
   $('move-file-div').style.display = 'none'
   $('files').style.display = 'block'
+})
+
+$('files-search').addEventListener('keydown', (event) => {
+  forCloud.files.searchRender()
 })
