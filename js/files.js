@@ -5,6 +5,23 @@ forCloud.files = {}
 
 {
 
+  function backFromFolder(path) {
+    let splitPath = path.split('/')
+    splitPath.pop()
+    splitPath.pop()
+    if (splitPath.length < 1) {
+      $('folder-back').style.display = 'none';
+      forCloud.files.render('/')
+    } else {
+      forCloud.files.render(splitPath.join('/'))
+      let backButton = $('folder-back').cloneNode(true);
+      $('folder-back').parentNode.replaceChild(backButton, $('folder-back'));
+      backButton.addEventListener('click', (event) => {
+        forCloud.files.backFromFolder(splitPath.join('/'))
+      })
+    }
+  }
+
   function moveFile(path, file) {
     forCloud.files.createFile(file.key, file.val().content, path, file.val().type)
     forCloud.files.deleteFile('/' + file.ref.path.toString(), file)
@@ -157,6 +174,12 @@ forCloud.files = {}
 
           titleContainer.addEventListener('click', () => {
             render(folderPath)
+            $('folder-back').style.display = 'block'
+            let backButton = $('folder-back').cloneNode(true);
+            $('folder-back').parentNode.replaceChild(backButton, $('folder-back'));
+            backButton.addEventListener('click', (event) => {
+              forCloud.files.backFromFolder(folderPath)
+            })
           })
         } else {
           titleContainer.addEventListener('click', () => {
@@ -227,6 +250,9 @@ forCloud.files = {}
 
             titleContainer.addEventListener('click', () => {
               render(folderPath)
+              $('folder-back').addEventListener('click', (event) => {
+                forCloud.files.backFromFolder(folder)
+              })
             })
           } else {
             titleContainer.addEventListener('click', () => {
@@ -316,7 +342,7 @@ forCloud.files = {}
             const folderPath = file.ref_.path.pieces_.splice(3).join('/')
 
             card.addEventListener('click', () => {
-              renderMove(folderPath, fileToMove)
+              renderMove(folderPath, fileToMove, fileToMovePath)
             })
           }
           $('move-file').appendChild(card)
@@ -336,6 +362,7 @@ forCloud.files = {}
   forCloud.files.moveFile = moveFile
   forCloud.files.moveFolder = moveFolder
   forCloud.files.renameFolder = renameFolder
+  forCloud.files.backFromFolder = backFromFolder
 }
 
 firebase.auth().onAuthStateChanged(() => {
