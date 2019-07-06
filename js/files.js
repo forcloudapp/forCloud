@@ -25,6 +25,7 @@ forCloud.files = {}
   function moveFile(path, file) {
     forCloud.files.createFile(file.key, file.val().content, path, file.val().type)
     forCloud.files.deleteFile('/' + file.ref.path.toString(), file)
+    forCloud.files.render('/')
   }
 
   function moveFolder(path, file, folderName, filePath) {
