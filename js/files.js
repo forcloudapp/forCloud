@@ -192,6 +192,8 @@ forCloud.files = {}
               storageRef.child(file.val().content).getDownloadURL().then(url => {
                 window.open(url)
               })
+            } else if (file.val().type === 'slideshow') {
+              location.assign('../slides/index.html?file=' + encodeURI(file.ref_.path.pieces_))
             }
           })
 
@@ -207,6 +209,8 @@ forCloud.files = {}
           card.appendChild(forCloud.createIcon('folder', '50px'))
         } else if (file.val().type === 'file') {
           card.appendChild(forCloud.createIcon('description', '50px'))
+        } else if (file.val().type === 'slideshow') {
+          card.appendChild(forCloud.createIcon('slideshow', '50px'))
         }
         card.appendChild(deleteButton)
         $('files').appendChild(card)
@@ -265,6 +269,8 @@ forCloud.files = {}
                 storageRef.child(file.val().content).getDownloadURL().then(url => {
                   window.open(url)
                 })
+              } else if (file.val().type === 'slideshow') {
+                location.assign('../slides/index.html?file=' + encodeURI(file.ref_.path.pieces_))
               }
             })
           }
@@ -279,6 +285,8 @@ forCloud.files = {}
             card.appendChild(forCloud.createIcon('folder', '50px'))
           } else if (file.val().type === 'file') {
             card.appendChild(forCloud.createIcon('description', '50px'))
+          } else if (file.val().type === 'slideshow') {
+            card.appendChild(forCloud.createIcon('slideshow', '50px'))
           }
           $('files').appendChild(card)
         }
