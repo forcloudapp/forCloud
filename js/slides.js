@@ -185,6 +185,7 @@ function beginDrag(element) {
   }
 
   async function saveSlideshow() {
+    forCloud.slides.savePosition()
     if (getQueryVariable('file') !== false) {
       firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt(JSON.stringify(slideshow)))
     } else {
