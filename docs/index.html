@@ -45,10 +45,29 @@
             <label class="mdl-textfield__label" for="document-name">Document Name</label>
           </div>
           <br>
-          <div class="mdl-textfield mdl-js-textfield">
-            <textarea class="mdl-textfield__input" type="text" rows= "10" id="document-editor"></textarea>
-            <label class="mdl-textfield__label" id="document-editor-label" for="document-editor">Document Content</label>
-          </div>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('bold');">
+            <b>B</b>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('italic');">
+            <i>I</i>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('underline');">
+            <u>U</u>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('superscript');">xⁱ</button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('subscript');">xₐ</button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyLeft');">
+            <i class="material-icons">format_align_left</i>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyCenter');">
+            <i class="material-icons">format_align_center</i>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyRight');">
+            <i class="material-icons">format_align_right</i>
+          </button>
+          <br>
+          <h5 class="mdl-textfield__input" style="outline: none; padding-left: 10%; width: 80%;" id="document-editor" contenteditable="true"></h5>
+          <br>
           <br>
           <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="save-document">
             Save Document

@@ -32,9 +32,6 @@ const forCloud = {}
       return this.#data
     }
 
-    changePassword (newPassword) {
-      // TODO
-    }
   }
 
   // Element functions.

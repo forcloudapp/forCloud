@@ -45,6 +45,12 @@ forCloud.files = {}
   async function deleteFile(path, file) {
     let deleteRef = firebase.database().ref().child(path)
     deleteRef.remove()
+    forCloud.files.render('/')
+  }
+
+  async function deleteFileButton(path, file) {
+    let deleteRef = firebase.database().ref().child(path)
+    deleteRef.remove()
     if (file.val().type === 'file') {
       storageRef.child(file.val().content).delete()
     }
@@ -59,6 +65,7 @@ forCloud.files = {}
       const filePath = firebase.auth().currentUser.uid + '/' + fileName
       fileRef.put(file).then((snapshot) => {
         createFile(fileName, filePath, '/', 'file')
+        render('/')
       })
     })
   }
@@ -140,7 +147,7 @@ forCloud.files = {}
         deleteButtonAction.classList.add('mdl-js-button')
         deleteButtonAction.classList.add('mdl-js-ripple-effect')
         deleteButtonAction.addEventListener('click', (event) => {
-          forCloud.files.deleteFile(filePath, file)
+          forCloud.files.deleteFileButton(filePath, file)
         })
         deleteButtonAction.textContent = 'Delete'
         deleteButton.appendChild(deleteButtonAction)
@@ -366,6 +373,7 @@ forCloud.files = {}
   forCloud.files.searchRender = searchRender
   forCloud.files.renderMove = renderMove
   forCloud.files.deleteFile = deleteFile
+  forCloud.files.deleteFileButton = deleteFileButton
   forCloud.files.renameFile = renameFile
   forCloud.files.uploadFile = uploadFile
   forCloud.files.moveFile = moveFile
@@ -385,4 +393,12 @@ $('close-file-move').addEventListener('click', (event) => {
 
 $('files-search').addEventListener('keydown', (event) => {
   forCloud.files.searchRender()
+})
+
+$('upload_file_button').addEventListener('click', (event) => {
+  forCloud.files.uploadFile()
+})
+
+$('new_folder').addEventListener('click', (event) => {
+  forCloud.files.createFolder(prompt('Name your new folder'), '/')
 })
