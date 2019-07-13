@@ -7,18 +7,6 @@ let current_slide = 0
 let slide = $('slide')
 let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
 
-function getQueryVariable(variable) {
-  var query = window.location.search.substring(1)
-  var vars = query.split('&')
-  for (var i = 0; i < vars.length; i++) {
-    var pair = vars[i].split('=')
-    if (pair[0] == variable) {
-      return pair[1]
-    }
-  }
-  return false
-}
-
 function stopDrag() {
   document.onmousemove = null
   document.onmouseup = null
@@ -46,11 +34,6 @@ function beginDrag(element) {
 
 
 {
-
-  async function createFile(name, content, path, type) {
-    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
-    return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
-  }
 
   function addHeader() {
     var text = document.createElement('h3')
@@ -186,10 +169,10 @@ function beginDrag(element) {
 
   async function saveSlideshow() {
     forCloud.slides.savePosition()
-    if (getQueryVariable('file') !== false) {
-      firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt(JSON.stringify(slideshow)))
+    if (forCloud.getQueryVariable('file') !== false) {
+      firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt(JSON.stringify(slideshow)))
     } else {
-      createFile($('slideshow-name').value, forCloud.encrypt(JSON.stringify(slideshow)), '/', 'slideshow').then(() => {
+      forCloud.files.createFile($('slideshow-name').value, forCloud.encrypt(JSON.stringify(slideshow)), '/', 'slideshow').then(() => {
         location.assign('../files/index.html')
       })
     }
@@ -220,8 +203,6 @@ function beginDrag(element) {
   forCloud.slides.saveSlideshow = saveSlideshow
   forCloud.slides.removeSlide = removeSlide
   forCloud.slides.deleteItem = deleteItem
-  forCloud.slides.createFile = createFile
-
 }
 
 $('title').addEventListener('click', (event) => {
@@ -261,9 +242,9 @@ $('save').addEventListener('click', (event) => {
 })
 
 firebase.auth().onAuthStateChanged(() => {
-  if (getQueryVariable('file') !== false) {
+  if (forCloud.getQueryVariable('file') !== false) {
     $('slideshow-name-div').style.display = 'none'
-    firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').on('value', (snapshot) => {
+    firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').on('value', (snapshot) => {
       slideshow = JSON.parse(forCloud.decrypt(snapshot.val()))
       forCloud.slides.updateSlide()
       for (var i = 0; i < document.getElementsByClassName('edit-slides').length; i++) {

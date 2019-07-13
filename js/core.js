@@ -11,6 +11,7 @@ firebase.initializeApp({
 })
 
 const forCloud = {}
+forCloud.files = {}
 
 {
   // Classes.
@@ -66,6 +67,11 @@ const forCloud = {}
     return firebase.auth().signOut()
   }
 
+  async function createFile(name, content, path, type) {
+    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
+    return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
+  }
+
   async function signUp (username, password) {
     // TODO
   }
@@ -79,6 +85,17 @@ const forCloud = {}
   }
 
   // Misc. functions.
+  function getQueryVariable(variable) {
+    var query = window.location.search.substring(1)
+    var vars = query.split('&')
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split('=')
+      if (pair[0] == variable) {
+        return pair[1]
+      }
+    }
+    return false
+  }
 
   function createIcon (icon, size) {
     let i = document.createElement('i')
@@ -148,4 +165,6 @@ const forCloud = {}
 
   forCloud.selectFile = selectFile
   forCloud.pickColor = pickColor
+  forCloud.files.createFile = createFile  
+  forCloud.getQueryVariable = getQueryVariable  
 }

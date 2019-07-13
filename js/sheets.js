@@ -2,18 +2,6 @@
 
 forCloud.sheets = {}
 
-function getQueryVariable (variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split('&');
-    for (var i = 0; i < vars.length; i++) {
-      var pair = vars[i].split('=');
-      if (pair[0] == variable) {
-        return pair[1];
-      }
-    }
-  return false;
-}
-
 {
     async function newTh (place) {
         let newTh = document.createElement('th');
@@ -35,24 +23,17 @@ function getQueryVariable (variable) {
         }
     }
 
-
-    async function createFile (name, content, path, type) {
-        firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
-        return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
-    }
-
     async function saveSpreadsheet () {
-        if (getQueryVariable('file') !== false) {
-            firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt($('sheets-editor').innerHTML))
+        if (forCloud.getQueryVariable('file') !== false) {
+            firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt($('sheets-editor').innerHTML))
         } else {
-            createFile($('spreadsheet-name').value, forCloud.encrypt($('sheets-editor').innerHTML), '/', 'spreadsheet').then(() => {
+            forCloud.files.createFile($('spreadsheet-name').value, forCloud.encrypt($('sheets-editor').innerHTML), '/', 'spreadsheet').then(() => {
               location.assign('../files/index.html')
             })
         }
     }
 
     forCloud.sheets.saveSpreadsheet = saveSpreadsheet
-    forCloud.sheets.createFile = createFile
     forCloud.sheets.newTh = newTh
     forCloud.sheets.newColumn = newColumn
     forCloud.sheets.newRow = newRow
@@ -72,8 +53,8 @@ $('add-column').addEventListener('click', () => {
 })
 
 firebase.auth().onAuthStateChanged(() => {
-    if (getQueryVariable('file') !== false) {
-        firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').on('value', (snapshot) => {
+    if (forCloud.getQueryVariable('file') !== false) {
+        firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').on('value', (snapshot) => {
             $('sheets-editor').innerHTML = forCloud.decrypt(snapshot.val())
             $('spreadsheet-name-label').style.display = 'none'
         })

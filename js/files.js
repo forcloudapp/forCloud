@@ -1,7 +1,6 @@
 'use strict'
 
 const storageRef = firebase.storage().ref();
-forCloud.files = {}
 
 {
 
@@ -64,7 +63,7 @@ forCloud.files = {}
       const fileRef = storageRef.child(firebase.auth().currentUser.uid).child(fileName)
       const filePath = firebase.auth().currentUser.uid + '/' + fileName
       fileRef.put(file).then((snapshot) => {
-        createFile(fileName, filePath, '/', 'file')
+        forCloud.files.createFile(fileName, filePath, '/', 'file')
         render('/')
       })
     })
@@ -99,11 +98,6 @@ forCloud.files = {}
     }
     forCloud.files.deleteFile('/' + path)
     forCloud.files.render('/')
-  }
-
-  async function createFile(name, content, path, type) {
-    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
-    return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
   }
 
   async function createFolder(name, path) {
@@ -367,7 +361,6 @@ forCloud.files = {}
     })
   }
 
-  forCloud.files.createFile = createFile
   forCloud.files.createFolder = createFolder
   forCloud.files.render = render
   forCloud.files.searchRender = searchRender
