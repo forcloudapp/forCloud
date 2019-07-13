@@ -67,6 +67,24 @@
         <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyRight');">
           <i class="material-icons">format_align_right</i>
         </button>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <select class="mdl-textfield__input" id="font-selector" name="font-selector">
+            <option>Roboto</option>
+            <option style='font-family: "Arial";' value="Arial,Arial,Helvetica,sans-serif">Arial</option>
+            <option style='font-family: "Arial Black";' value="Arial Black,Arial Black,Gadget,sans-serif">Arial Black</option>
+            <option style='font-family: "Comic Sans MS";' value="Comic Sans MS,Comic Sans MS,cursive">Comic Sans</option>
+            <option style='font-family: "Courier New";' value="Courier New,Courier New,Courier,monospace">Courier New</option>
+            <option style='font-family: "Georgia";' value="Georgia,Georgia,serif">Georgia</option>
+            <option style='font-family: "Impact";' value="Impact,Charcoal,sans-serif">Impact</option>
+            <option style='font-family: "Lucida Console,Monaco,monospace";' value="Lucida Console,Monaco,monospace">Lucida Console</option>
+            <option style='font-family: "Lucida Sans Unicode,Lucida Grande,sans-serif";' value="Lucida Sans Unicode,Lucida Grande,sans-serif">Lucida Sans</option>
+            <option style='font-family: "Palatino Linotype";' value="Palatino Linotype,Book Antiqua,Palatino,serif">Palatino Linotype</option>
+            <option style='font-family: "Tahoma";' value="Tahoma,Geneva,sans-serif">Tahoma</option>
+            <option style='font-family: "Times New Roman";' value="Times New Roman,Times,serif">Times New Roman</option>
+            <option style='font-family: "Trebuchet MS";' value="Trebuchet MS,Helvetica,sans-serif">Trebuchet MS</option>
+            <option style='font-family: "Gill Sans";' value="Gill Sans,Geneva,sans-serif">Gill Sans</option>
+          </select>
+        </div>
         <button id="title" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i class="material-icons">title</i></button>
         <button id="subtitle" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i class="material-icons">text_fields</i></button>
         <button id="text" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i class="material-icons">short_text</i></button>
@@ -109,6 +127,7 @@
   <script src="../js/home.js"></script>
   <script src="../js/aes.js"></script>
   <script src="../js/slides.js"></script>
+  <script src="../js/fontChange.js"></script>
 </body>
 
 </html>

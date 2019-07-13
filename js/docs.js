@@ -43,7 +43,6 @@ firebase.auth().onAuthStateChanged(() => {
         firebase.database().ref(decodeURI(getQueryVariable('file')).split(',').join('/')).child('content').on('value', (snapshot) => {
             $('document-editor').innerHTML = forCloud.decrypt(snapshot.val())
             $('document-name-label').style.display = 'none'
-            $('document-editor-label').style.display = 'none'
         })
     }
 })
