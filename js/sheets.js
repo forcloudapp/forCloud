@@ -12,13 +12,13 @@ forCloud.sheets = {}
     async function newRow () {
         let newTr = document.createElement('tr');
         $("sheets-editor").getElementsByTagName("tbody")[0].appendChild(newTr);
-        for (var i = 0; i < $("sheets-editor").getElementsByTagName("tbody")[0].getElementsByTagName('tr')[0].getElementsByTagName('th').length; i++) {
+        for (let i = 0; i < $("sheets-editor").getElementsByTagName("tbody")[0].getElementsByTagName('tr')[0].getElementsByTagName('th').length; i++) {
           newTh(newTr);
         }
       }
       
     async function newColumn () {
-        for (var i = 0; i < $("sheets-editor").getElementsByTagName('tr').length; i++) {
+        for (let i = 0; i < $("sheets-editor").getElementsByTagName('tr').length; i++) {
           newTh($("sheets-editor").getElementsByTagName("tbody")[0].getElementsByTagName('tr')[i]);
         }
     }
