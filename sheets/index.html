@@ -1,33 +1,21 @@
 <!doctype html>
 <html lang="en-US">
-  <head>
-    <title>forCloud (beta)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-blue.min.css">
-    <link rel="icon" href="../images/favicon.ico">
-  </head>
-  <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-      <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">forCloud <b>beta</b></span>
-          <div class="mdl-layout-spacer"></div>
-          <nav class="mdl-navigation mdl-layout--large-screen-only">
-            <a class="mdl-navigation__link" href="../settings/index.html" id="signed-in-as">Signed in as ...</a>
-            <a class="mdl-navigation__link" href="../chat/index.html">Chat</a>
-            <a class="mdl-navigation__link" href="../files/index.html">Files</a>
-            <a class="mdl-navigation__link" href="../docs/index.html">Docs</a>
-            <a class="mdl-navigation__link">Sheets</a>
-            <a class="mdl-navigation__link" href="../slides/index.html">Slides</a>
-            <a class="mdl-navigation__link" href="../sign-out/index.html">Sign Out</a>
-            <div class="mdl-layout-spacer"></div>
-          </nav>
-        </div>
-      </header>
-      <div class="mdl-layout__drawer mdl-layout--small-screen-only">
+
+<head>
+  <title>forCloud (beta)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-blue.min.css">
+  <link rel="icon" href="../images/favicon.ico">
+</head>
+
+<body>
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
         <span class="mdl-layout-title">forCloud <b>beta</b></span>
-        <nav class="mdl-navigation">
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation mdl-layout--large-screen-only">
           <a class="mdl-navigation__link" href="../settings/index.html" id="signed-in-as">Signed in as ...</a>
           <a class="mdl-navigation__link" href="../chat/index.html">Chat</a>
           <a class="mdl-navigation__link" href="../files/index.html">Files</a>
@@ -35,58 +23,91 @@
           <a class="mdl-navigation__link">Sheets</a>
           <a class="mdl-navigation__link" href="../slides/index.html">Slides</a>
           <a class="mdl-navigation__link" href="../sign-out/index.html">Sign Out</a>
+          <div class="mdl-layout-spacer"></div>
         </nav>
       </div>
-      <main class="mdl-layout__content">
-        <div class="page-content mdl-typography--text-center">
-          <h3>Spreadsheets</h3>
+    </header>
+    <div class="mdl-layout__drawer mdl-layout--small-screen-only">
+      <span class="mdl-layout-title">forCloud <b>beta</b></span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="../settings/index.html" id="signed-in-as">Signed in as ...</a>
+        <a class="mdl-navigation__link" href="../chat/index.html">Chat</a>
+        <a class="mdl-navigation__link" href="../files/index.html">Files</a>
+        <a class="mdl-navigation__link" href="../docs/index.html">Docs</a>
+        <a class="mdl-navigation__link">Sheets</a>
+        <a class="mdl-navigation__link" href="../slides/index.html">Slides</a>
+        <a class="mdl-navigation__link" href="../sign-out/index.html">Sign Out</a>
+      </nav>
+    </div>
+    <main class="mdl-layout__content">
+      <div class="page-content mdl-typography--text-center">
+        <h3>Spreadsheets</h3>
 
-          <div id="spreadsheet-name-label" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="spreadsheet-name" autofocus>
-            <label class="mdl-textfield__label" for="spreadsheet-name">Spreadsheet Name</label>
-          </div>
-          <br>
-          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('bold');">
-            <b>B</b>
-          </button>
-          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('italic');">
-            <i>I</i>
-          </button>
-          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('underline');">
-            <u>U</u>
-          </button>
-          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('superscript');">xⁱ</button>
-          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('subscript');">xₐ</button>
-          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyLeft');">
-            <i class="material-icons">format_align_left</i>
-          </button>
-          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyCenter');">
-            <i class="material-icons">format_align_center</i>
-          </button>
-          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyRight');">
-            <i class="material-icons">format_align_right</i>
-          </button>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <select class="mdl-textfield__input" id="font-selector" name="font-selector">
-              <option>Roboto</option>
-              <option style='font-family: "Arial";' value="Arial,Arial,Helvetica,sans-serif">Arial</option>
-              <option style='font-family: "Arial Black";' value="Arial Black,Arial Black,Gadget,sans-serif">Arial Black</option>
-              <option style='font-family: "Comic Sans MS";' value="Comic Sans MS,Comic Sans MS,cursive">Comic Sans</option>
-              <option style='font-family: "Courier New";' value="Courier New,Courier New,Courier,monospace">Courier New</option>
-              <option style='font-family: "Georgia";' value="Georgia,Georgia,serif">Georgia</option>
-              <option style='font-family: "Impact";' value="Impact,Charcoal,sans-serif">Impact</option>
-              <option style='font-family: "Lucida Console,Monaco,monospace";' value="Lucida Console,Monaco,monospace">Lucida Console</option>
-              <option style='font-family: "Lucida Sans Unicode,Lucida Grande,sans-serif";' value="Lucida Sans Unicode,Lucida Grande,sans-serif">Lucida Sans</option>
-              <option style='font-family: "Palatino Linotype";' value="Palatino Linotype,Book Antiqua,Palatino,serif">Palatino Linotype</option>
-              <option style='font-family: "Tahoma";' value="Tahoma,Geneva,sans-serif">Tahoma</option>
-              <option style='font-family: "Times New Roman";' value="Times New Roman,Times,serif">Times New Roman</option>
-              <option style='font-family: "Trebuchet MS";' value="Trebuchet MS,Helvetica,sans-serif">Trebuchet MS</option>
-              <option style='font-family: "Gill Sans";' value="Gill Sans,Geneva,sans-serif">Gill Sans</option>
-            </select>
-          </div>
-          <br>
-          <br>
-          <table style="width: 100%; outline: none;" contenteditable="true" id="sheets-editor">
+        <div id="spreadsheet-name-label" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" id="spreadsheet-name" autofocus>
+          <label class="mdl-textfield__label" for="spreadsheet-name">Spreadsheet Name</label>
+        </div>
+        <br>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+          onclick="document.execCommand('bold');">
+          <b>B</b>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+          onclick="document.execCommand('italic');">
+          <i>I</i>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+          onclick="document.execCommand('underline');">
+          <u>U</u>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+          onclick="document.execCommand('superscript');">xⁱ</button>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+          onclick="document.execCommand('subscript');">xₐ</button>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+          onclick="document.execCommand('justifyLeft');">
+          <i class="material-icons">format_align_left</i>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+          onclick="document.execCommand('justifyCenter');">
+          <i class="material-icons">format_align_center</i>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+          onclick="document.execCommand('justifyRight');">
+          <i class="material-icons">format_align_right</i>
+        </button>
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="insertImage()">
+          <i class="material-icons">add_a_photo</i>
+        </button>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <select class="mdl-textfield__input" id="font-selector" name="font-selector">
+            <option>Roboto</option>
+            <option style='font-family: "Arial";' value="Arial,Arial,Helvetica,sans-serif">Arial</option>
+            <option style='font-family: "Arial Black";' value="Arial Black,Arial Black,Gadget,sans-serif">Arial Black
+            </option>
+            <option style='font-family: "Comic Sans MS";' value="Comic Sans MS,Comic Sans MS,cursive">Comic Sans
+            </option>
+            <option style='font-family: "Courier New";' value="Courier New,Courier New,Courier,monospace">Courier New
+            </option>
+            <option style='font-family: "Georgia";' value="Georgia,Georgia,serif">Georgia</option>
+            <option style='font-family: "Impact";' value="Impact,Charcoal,sans-serif">Impact</option>
+            <option style='font-family: "Lucida Console,Monaco,monospace";' value="Lucida Console,Monaco,monospace">
+              Lucida Console</option>
+            <option style='font-family: "Lucida Sans Unicode,Lucida Grande,sans-serif";'
+              value="Lucida Sans Unicode,Lucida Grande,sans-serif">Lucida Sans</option>
+            <option style='font-family: "Palatino Linotype";' value="Palatino Linotype,Book Antiqua,Palatino,serif">
+              Palatino Linotype</option>
+            <option style='font-family: "Tahoma";' value="Tahoma,Geneva,sans-serif">Tahoma</option>
+            <option style='font-family: "Times New Roman";' value="Times New Roman,Times,serif">Times New Roman</option>
+            <option style='font-family: "Trebuchet MS";' value="Trebuchet MS,Helvetica,sans-serif">Trebuchet MS</option>
+            <option style='font-family: "Gill Sans";' value="Gill Sans,Geneva,sans-serif">Gill Sans</option>
+          </select>
+        </div>
+        <br>
+        <br>
+        <div style="overflow-x:auto;">
+          <table style="width: 100%; outline: none; overflow-x: scroll; white-space: nowrap;" contenteditable="true"
+            id="sheets-editor">
             <tr>
               <th>Value</th>
               <th>Value</th>
@@ -108,27 +129,32 @@
               <th>Value</th>
             </tr>
           </table>
-          <br>
-          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="add-row">New Row</button>
-          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="add-column">New Column</button>
-          <br>
-          <br>
-          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="save-spreadsheet">
-            Save Spreadsheet
-          </button>
         </div>
-      </main>
-    </div>
+        <br>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+          id="add-row">New Row</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+          id="add-column">New Column</button>
+        <br>
+        <br>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+          id="save-spreadsheet">
+          Save Spreadsheet
+        </button>
+      </div>
+    </main>
+  </div>
 
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
 
-    <script src="../js/core.js"></script>
-    <script src="../js/home.js"></script>
-    <script src="../js/sheets.js"></script>
-    <script src="../js/aes.js"></script>
-    <script src="../js/fontChange.js"></script>
-  </body>
+  <script src="../js/core.js"></script>
+  <script src="../js/home.js"></script>
+  <script src="../js/sheets.js"></script>
+  <script src="../js/aes.js"></script>
+  <script src="../js/fontChange.js"></script>
+</body>
+
 </html>

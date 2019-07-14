@@ -10,3 +10,9 @@ $('font-selector').addEventListener('change', (event) => {
   let html = `<div style="font-family: ${$('font-selector').value};">${selectedHtml.replace(/font-family/g, "font-family-old")}</div>`
   document.execCommand('insertHTML', false, html);
 })
+
+function insertImage () {
+  let imageUrl = prompt('Image URL')
+  let imageHtml = `<img src="${imageUrl}">`
+  document.execCommand('insertHTML', false, imageHtml);
+}
