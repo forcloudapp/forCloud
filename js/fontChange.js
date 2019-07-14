@@ -1,12 +1,12 @@
 $('font-selector').addEventListener('change', (event) => {
-  var sel = window.getSelection();
+  let sel = window.getSelection(); 
   if (sel.rangeCount) {
-    var e = document.createElement('span');
-    e.style = 'font-family:' + $('font-selector').value + ';';
-    e.innerHTML = sel.toString();
-
-    var range = sel.getRangeAt(0);
-    range.deleteContents();
-    range.insertNode(e);
+    let container = document.createElement('div');
+    for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+      container.appendChild(sel.getRangeAt(i).cloneContents());
+    }
+    selectedHtml = container.innerHTML;
   }
+  let html = `<div style='font-family: ${$('font-selector').value};'>${selectedHtml.replace('font-family', 'font-family-old')}</div>`
+  document.execCommand('insertHTML', false, html);
 })
