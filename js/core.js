@@ -14,26 +14,7 @@ const forCloud = {}
 forCloud.files = {}
 
 {
-  // Classes.
 
-  class User {
-    #username
-    #data
-
-    constructor (username, data) {
-      this.#username = username
-      this.#data = data
-    }
-
-    get username () {
-      return this.#username
-    }
-
-    get data () {
-      return this.#data
-    }
-
-  }
 
   // Element functions.
 
@@ -145,8 +126,6 @@ forCloud.files = {}
 
     return promise
   }
-
-  forCloud.User = User
 
   window.$ = $
   window.$$ = $$
