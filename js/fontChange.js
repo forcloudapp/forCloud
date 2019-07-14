@@ -16,3 +16,10 @@ function insertImage () {
   let imageHtml = `<img src="${imageUrl}">`
   document.execCommand('insertHTML', false, imageHtml);
 }
+
+function changeColor () {
+  document.execCommand("styleWithCSS", false, true);
+  forCloud.pickColor().then((color) => {
+    document.execCommand("foreColor", false, color);
+  })
+}
