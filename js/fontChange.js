@@ -7,6 +7,6 @@ $('font-selector').addEventListener('change', (event) => {
     }
     selectedHtml = container.innerHTML;
   }
-  let html = `<div style='font-family: ${$('font-selector').value};'>${selectedHtml.replace('font-family', 'font-family-old')}</div>`
+  let html = `<div style="font-family: ${$('font-selector').value};">${selectedHtml.replace(/font-family/g, "font-family-old")}</div>`
   document.execCommand('insertHTML', false, html);
 })
