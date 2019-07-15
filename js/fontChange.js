@@ -21,7 +21,7 @@ if ($('size-selector') !== null) {
       }
       selectedHtml = container.innerHTML;
     }
-    let html = `<div style="font-size: ${$('size-selector').value}px;">${selectedHtml.replace(/font-size/g, "font-size-old")}</div>`
+    let html = `<div style="font-size: ${$('size-selector').value}px; line-height: 1em;">${selectedHtml.replace(/font-size/g, "font-size-old")}</div>`
     document.execCommand('insertHTML', false, html);
   })
 }

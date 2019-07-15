@@ -41,7 +41,7 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
     text.contentEditable = 'true'
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px; font-size: 48px;'
+    text.style = 'position: absolute margin: 0px; font-size: 48px; line-height: 1em;'
     text.onmousedown = () => {
       beginDrag(text)
       deleteItem(this)
@@ -59,7 +59,7 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
     text.contentEditable = 'true'
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px color: gray; font-size: 24px;'
+    text.style = 'position: absolute margin: 0px color: gray; font-size: 24px; line-height: 1em;'
     text.onmousedown = function () {
       beginDrag(this)
       deleteItem(this)
@@ -77,7 +77,7 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
     text.contentEditable = true
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px;'
+    text.style = 'position: absolute margin: 0px; line-height: 1em;'
     text.onmousedown = function () {
       beginDrag(this)
       deleteItem(this)
