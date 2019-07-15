@@ -36,12 +36,13 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
   }
 
   function addHeader() {
-    let text = document.createElement('h3')
+    let text = document.createElement('span')
     text.innerHTML = 'New Header'
+    text
     text.contentEditable = 'true'
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px'
+    text.style = 'position: absolute margin: 0px; font-size: 48px;'
     text.onmousedown = () => {
       beginDrag(text)
       deleteItem(this)
@@ -54,12 +55,12 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
   }
 
   function addSubtitle() {
-    let text = document.createElement('h5')
+    let text = document.createElement('span')
     text.innerHTML = 'New Subtitle'
     text.contentEditable = 'true'
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px color: gray'
+    text.style = 'position: absolute margin: 0px color: gray; font-size: 24px;'
     text.onmousedown = function () {
       beginDrag(this)
       deleteItem(this)
@@ -72,12 +73,12 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
   }
 
   function addText() {
-    let text = document.createElement('h6')
+    let text = document.createElement('span')
     text.innerHTML = "Click to enter text"
     text.contentEditable = true
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px'
+    text.style = 'position: absolute margin: 0px;'
     text.onmousedown = function () {
       beginDrag(this)
       deleteItem(this)
