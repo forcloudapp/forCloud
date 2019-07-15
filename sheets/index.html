@@ -76,10 +76,10 @@
           onclick="document.execCommand('justifyRight');">
           <i class="material-icons">format_align_right</i>
         </button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="insertImage()">
+        <button id="insertImage" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
           <i class="material-icons">add_a_photo</i>
         </button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="changeColor()">
+        <button id="change-color" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
           <i class="material-icons">color_lens</i>
         </button>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -104,6 +104,21 @@
             <option style='font-family: "Times New Roman";' value="Times New Roman,Times,serif">Times New Roman</option>
             <option style='font-family: "Trebuchet MS";' value="Trebuchet MS,Helvetica,sans-serif">Trebuchet MS</option>
             <option style='font-family: "Gill Sans";' value="Gill Sans,Geneva,sans-serif">Gill Sans</option>
+          </select>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <select class="mdl-textfield__input" id="size-selector" name="size-selector">
+            <option>10</option>
+            <option>16</option>
+            <option>20</option>
+            <option>24</option>
+            <option>30</option>
+            <option>36</option>
+            <option>48</option>
+            <option>56</option>
+            <option>66</option>
+            <option>75</option>
+            <option>86</option>
           </select>
         </div>
         <br>

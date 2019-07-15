@@ -1,5 +1,5 @@
 $('font-selector').addEventListener('change', (event) => {
-  let sel = window.getSelection(); 
+  let sel = window.getSelection();
   if (sel.rangeCount) {
     let container = document.createElement('div');
     for (var i = 0, len = sel.rangeCount; i < len; ++i) {
@@ -11,15 +11,34 @@ $('font-selector').addEventListener('change', (event) => {
   document.execCommand('insertHTML', false, html);
 })
 
-function insertImage () {
-  let imageUrl = prompt('Image URL')
-  let imageHtml = `<img src="${imageUrl}">`
-  document.execCommand('insertHTML', false, imageHtml);
+if ($('size-selector') !== null) {
+  $('size-selector').addEventListener('change', (event) => {
+    let sel = window.getSelection();
+    if (sel.rangeCount) {
+      let container = document.createElement('div');
+      for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+        container.appendChild(sel.getRangeAt(i).cloneContents());
+      }
+      selectedHtml = container.innerHTML;
+    }
+    let html = `<div style="font-size: ${$('size-selector').value}px;">${selectedHtml.replace(/font-size/g, "font-size-old")}</div>`
+    document.execCommand('insertHTML', false, html);
+  })
 }
 
-function changeColor () {
+$('change-color').addEventListener('click', (event) => {
   document.execCommand("styleWithCSS", false, true);
   forCloud.pickColor().then((color) => {
     document.execCommand("foreColor", false, color);
+  })
+})
+
+if ($('insertImage') !== null) {
+  $('insertImage').addEventListener('click', (event) => {
+    let imageUrl = prompt('Image URL')
+    if (imageUrl !== null) {
+      let imageHtml = `<img src="${imageUrl}">`
+      document.execCommand('insertHTML', false, imageHtml);
+    }
   })
 }
