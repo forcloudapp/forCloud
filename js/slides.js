@@ -38,7 +38,6 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
   function addHeader() {
     let text = document.createElement('span')
     text.innerHTML = 'New Header'
-    text
     text.contentEditable = 'true'
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
