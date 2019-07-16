@@ -53,10 +53,6 @@ forCloud.files = {}
     return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
   }
 
-  async function signUp (username, password) {
-    // TODO
-  }
-
   function stringifyUsername (username) {
     return `${username}@forcloud.app`
   }
@@ -137,7 +133,6 @@ forCloud.files = {}
 
   forCloud.signIn = signIn
   forCloud.signOut = signOut
-  forCloud.signUp = signUp
   forCloud.stringifyUsername = stringifyUsername
   forCloud.parseEmail = parseEmail
   forCloud.createIcon = createIcon
