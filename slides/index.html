@@ -48,80 +48,108 @@
           <label class="mdl-textfield__label" for="slideshowname">Slideshow Name</label>
         </div>
         <br>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('bold');">
-          <b>B</b>
-        </button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('italic');">
-          <i>I</i>
-        </button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('underline');">
-          <u>U</u>
-        </button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('superscript');">xⁱ</button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('subscript');">xₐ</button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyLeft');">
-          <i class="material-icons">format_align_left</i>
-        </button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyCenter');">
-          <i class="material-icons">format_align_center</i>
-        </button>
-        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="document.execCommand('justifyRight');">
-          <i class="material-icons">format_align_right</i>
-        </button>
-        <button id="change-color" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-          <i class="material-icons">color_lens</i>
-        </button>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <select class="mdl-textfield__input" id="font-selector" name="font-selector">
-            <option>Roboto</option>
-            <option style='font-family: "Arial";' value="Arial,Arial,Helvetica,sans-serif">Arial</option>
-            <option style='font-family: "Arial Black";' value="Arial Black,Arial Black,Gadget,sans-serif">Arial Black</option>
-            <option style='font-family: "Comic Sans MS";' value="Comic Sans MS,Comic Sans MS,cursive">Comic Sans</option>
-            <option style='font-family: "Courier New";' value="Courier New,Courier New,Courier,monospace">Courier New</option>
-            <option style='font-family: "Georgia";' value="Georgia,Georgia,serif">Georgia</option>
-            <option style='font-family: "Impact";' value="Impact,Charcoal,sans-serif">Impact</option>
-            <option style='font-family: "Lucida Console,Monaco,monospace";' value="Lucida Console,Monaco,monospace">Lucida Console</option>
-            <option style='font-family: "Lucida Sans Unicode,Lucida Grande,sans-serif";' value="Lucida Sans Unicode,Lucida Grande,sans-serif">Lucida Sans</option>
-            <option style='font-family: "Palatino Linotype";' value="Palatino Linotype,Book Antiqua,Palatino,serif">Palatino Linotype</option>
-            <option style='font-family: "Tahoma";' value="Tahoma,Geneva,sans-serif">Tahoma</option>
-            <option style='font-family: "Times New Roman";' value="Times New Roman,Times,serif">Times New Roman</option>
-            <option style='font-family: "Trebuchet MS";' value="Trebuchet MS,Helvetica,sans-serif">Trebuchet MS</option>
-            <option style='font-family: "Gill Sans";' value="Gill Sans,Geneva,sans-serif">Gill Sans</option>
-          </select>
-          <label class="mdl-textfield__label" for="font-selector">Font Selector</label>
+        <div style='position: relative; z-index: 2147483647;'>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+            onclick="document.execCommand('bold');">
+            <b>B</b>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+            onclick="document.execCommand('italic');">
+            <i>I</i>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+            onclick="document.execCommand('underline');">
+            <u>U</u>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+            onclick="document.execCommand('superscript');">xⁱ</button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+            onclick="document.execCommand('subscript');">xₐ</button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+            onclick="document.execCommand('justifyLeft');">
+            <i class="material-icons">format_align_left</i>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+            onclick="document.execCommand('justifyCenter');">
+            <i class="material-icons">format_align_center</i>
+          </button>
+          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+            onclick="document.execCommand('justifyRight');">
+            <i class="material-icons">format_align_right</i>
+          </button>
+          <button id="change-color" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+            <i class="material-icons">color_lens</i>
+          </button>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <select class="mdl-textfield__input" id="font-selector" name="font-selector">
+              <option>Roboto</option>
+              <option style='font-family: "Arial";' value="Arial,Arial,Helvetica,sans-serif">Arial</option>
+              <option style='font-family: "Arial Black";' value="Arial Black,Arial Black,Gadget,sans-serif">Arial Black
+              </option>
+              <option style='font-family: "Comic Sans MS";' value="Comic Sans MS,Comic Sans MS,cursive">Comic Sans
+              </option>
+              <option style='font-family: "Courier New";' value="Courier New,Courier New,Courier,monospace">Courier New
+              </option>
+              <option style='font-family: "Georgia";' value="Georgia,Georgia,serif">Georgia</option>
+              <option style='font-family: "Impact";' value="Impact,Charcoal,sans-serif">Impact</option>
+              <option style='font-family: "Lucida Console,Monaco,monospace";' value="Lucida Console,Monaco,monospace">
+                Lucida Console</option>
+              <option style='font-family: "Lucida Sans Unicode,Lucida Grande,sans-serif";'
+                value="Lucida Sans Unicode,Lucida Grande,sans-serif">Lucida Sans</option>
+              <option style='font-family: "Palatino Linotype";' value="Palatino Linotype,Book Antiqua,Palatino,serif">
+                Palatino Linotype</option>
+              <option style='font-family: "Tahoma";' value="Tahoma,Geneva,sans-serif">Tahoma</option>
+              <option style='font-family: "Times New Roman";' value="Times New Roman,Times,serif">Times New Roman
+              </option>
+              <option style='font-family: "Trebuchet MS";' value="Trebuchet MS,Helvetica,sans-serif">Trebuchet MS
+              </option>
+              <option style='font-family: "Gill Sans";' value="Gill Sans,Geneva,sans-serif">Gill Sans</option>
+            </select>
+            <label class="mdl-textfield__label" for="font-selector">Font Selector</label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <select class="mdl-textfield__input" id="size-selector" name="size-selector">
+              <option value="16">Default</option>
+              <option>10</option>
+              <option>16</option>
+              <option>20</option>
+              <option>24</option>
+              <option>30</option>
+              <option>36</option>
+              <option>48</option>
+              <option>56</option>
+              <option>66</option>
+              <option>75</option>
+              <option>86</option>
+            </select>
+            <label class="mdl-textfield__label" for="size-selector">Font Size</label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <select class="mdl-textfield__input" id="line-seperation-selector" name="line-seperation-selector">
+              <option value="1">Default</option>
+              <option>1</option>
+              <option>1.5</option>
+              <option>2</option>
+            </select>
+            <label class="mdl-textfield__label" for="line-seperation-selector">Line Seperation</label>
+          </div>
+          <button id="title" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i
+              class="material-icons">title</i></button>
+          <button id="subtitle" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i
+              class="material-icons">text_fields</i></button>
+          <button id="text" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i
+              class="material-icons">short_text</i></button>
+          <button id="image" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i
+              class="material-icons">image</i></button>
+          <button id="save" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i
+              class="material-icons">save</i></button>
+          <button id="delete-item" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" disabled><i
+              class="material-icons">delete</i></button>
+          <button id="bring-front" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" disabled><i
+              class="material-icons">vertical_align_top</i></button>
+          <button id="move-back" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" disabled><i
+              class="material-icons">vertical_align_bottom</i></button>
         </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <select class="mdl-textfield__input" id="size-selector" name="size-selector">
-            <option value="16">Default</option>
-            <option>10</option>
-            <option>16</option>
-            <option>20</option>
-            <option>24</option>
-            <option>30</option>
-            <option>36</option>
-            <option>48</option>
-            <option>56</option>
-            <option>66</option>
-            <option>75</option>
-            <option>86</option>
-          </select>
-          <label class="mdl-textfield__label" for="size-selector">Font Size</label>
-        </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <select class="mdl-textfield__input" id="line-seperation-selector" name="line-seperation-selector">
-            <option value="1">Default</option>
-            <option>1</option>
-            <option>1.5</option>
-            <option>2</option>
-          </select>
-          <label class="mdl-textfield__label" for="line-seperation-selector">Line Seperation</label>
-        </div>
-        <button id="title" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i class="material-icons">title</i></button>
-        <button id="subtitle" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i class="material-icons">text_fields</i></button>
-        <button id="text" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i class="material-icons">short_text</i></button>
-        <button id="image" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i class="material-icons">image</i></button>
-        <button id="save" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"><i class="material-icons">save</i></button>
-        <button id="delete-item" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" disabled><i class="material-icons">delete</i></button>
         <div id="slide">
           <br>
           <br>
@@ -140,11 +168,15 @@
           <br>
         </div>
         <br>
-        <h5 id="currentSlide">1/1</h5>
-        <button id="previousSlide" class="mdl-button mdl-js-button"><i class="material-icons">keyboard_arrow_left</i></button> 
-        <button id="nextSlide" class="mdl-button mdl-js-button"><i class="material-icons">keyboard_arrow_right</i></button>
-        <button id="newSlide" class="mdl-button mdl-js-button">+</button>
-        <button id="removeSlide" class="mdl-button mdl-js-button">-</button>
+        <div style='position: relative; z-index: 2147483647;'>
+          <h5 id="currentSlide">1/1</h5>
+          <button id="previousSlide" class="mdl-button mdl-js-button"><i
+              class="material-icons">keyboard_arrow_left</i></button>
+          <button id="nextSlide" class="mdl-button mdl-js-button"><i
+              class="material-icons">keyboard_arrow_right</i></button>
+          <button id="newSlide" class="mdl-button mdl-js-button">+</button>
+          <button id="removeSlide" class="mdl-button mdl-js-button">-</button>
+        </div>
       </div>
     </main>
   </div>

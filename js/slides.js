@@ -41,13 +41,16 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
     text.contentEditable = 'true'
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px; font-size: 48px; line-height: 1;'
+    text.style = 'position: absolute margin: 0px; font-size: 48px; line-height: 1; z-index: 1073741824;'
     text.onmousedown = () => {
       beginDrag(text)
       deleteItem(this)
+      positionItem(this)
     }
     text.onblur = () => {
       $('delete-item').disabled = true
+      $('bring-front').disabled = true
+      $('move-back').disabled = true
     }
     slideContainer.appendChild(text)
     forCloud.slides.savePosition()
@@ -59,13 +62,16 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
     text.contentEditable = 'true'
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px color: gray; font-size: 24px; line-height: 1;'
+    text.style = 'position: absolute margin: 0px color: gray; font-size: 24px; line-height: 1; z-index: 1073741824;'
     text.onmousedown = function () {
       beginDrag(this)
       deleteItem(this)
+      positionItem(this)
     }
     text.onblur = () => {
       $('delete-item').disabled = true
+      $('bring-front').disabled = true
+      $('move-back').disabled = true
     }
     slideContainer.appendChild(text)
     forCloud.slides.savePosition()
@@ -77,13 +83,16 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
     text.contentEditable = true
     text.classList.add("edit-slides")
     text.classList.add("draggable-slides")
-    text.style = 'position: absolute margin: 0px; line-height: 1;'
+    text.style = 'position: absolute margin: 0px; line-height: 1; z-index: 1073741824;'
     text.onmousedown = function () {
       beginDrag(this)
       deleteItem(this)
+      positionItem(this)
     }
     text.onblur = () => {
       $('delete-item').disabled = true
+      $('bring-front').disabled = true
+      $('move-back').disabled = true
     }
     slideContainer.appendChild(text)
     forCloud.slides.savePosition()
@@ -95,18 +104,30 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
       let image = document.createElement('img')
       image.draggable = false
       image.src = src
+      image.style = 'z-index: 1073741824;'
       image.classList.add("edit-slides")
       image.classList.add("draggable-slides")
       image.onmousedown = function () {
         beginDrag(this)
         deleteItem(this)
+        positionItem(this)
       }
       image.onblur = () => {
         $('delete-item').disabled = true
+        $('bring-front').disabled = true
+        $('move-back').disabled = true
       }
       slideContainer.appendChild(image)
       forCloud.slides.savePosition()
     }
+  }
+
+  function bringForward(element) {
+    element.style.zIndex = Number(element.style.zIndex) + 1
+  }
+
+  function moveBackward(element) {
+    element.style.zIndex = Number(element.style.zIndex) - 1
   }
 
   function addSlide() {
@@ -150,9 +171,12 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
       document.getElementsByClassName('edit-slides')[i].onmousedown = function () {
         beginDrag(this)
         forCloud.slides.deleteItem(this)
+        forCloud.slides.positionItem(this)
       }
       document.getElementsByClassName('edit-slides')[i].onblur = () => {
         $('delete-item').disabled = true
+        $('bring-front').disabled = true
+        $('move-back').disabled = true
       }
       if (i == document.getElementsByClassName('edit-slides').length - 1) {
         return false
@@ -191,6 +215,32 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
     $('delete-item').parentNode.replaceChild(deleteItem, $('delete-item'));
   }
 
+  function positionItem(element) {
+    let bringFront = $('bring-front').cloneNode(true);
+    bringFront.onmousedown = (e) => {
+      e.preventDefault()
+    }
+    bringFront.addEventListener('click', () => {
+      forCloud.slides.bringForward(element)
+      forCloud.slides.beginDrag(element)
+      forCloud.slides.savePosition();
+    })
+    bringFront.disabled = false
+    $('bring-front').parentNode.replaceChild(bringFront, $('bring-front'));
+
+    let moveBack = $('move-back').cloneNode(true);
+    moveBack.onmousedown = (e) => {
+      e.preventDefault()
+    }
+    moveBack.addEventListener('click', () => {
+      forCloud.slides.moveBackward(element)
+      forCloud.slides.beginDrag(element)
+      forCloud.slides.savePosition();
+    })
+    moveBack.disabled = false
+    $('move-back').parentNode.replaceChild(moveBack, $('move-back'));
+  }
+
   forCloud.slides.nextSlide = nextSlide
   forCloud.slides.updateSlide = updateSlide
   forCloud.slides.previousSlide = previousSlide
@@ -203,6 +253,9 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
   forCloud.slides.saveSlideshow = saveSlideshow
   forCloud.slides.removeSlide = removeSlide
   forCloud.slides.deleteItem = deleteItem
+  forCloud.slides.positionItem = positionItem
+  forCloud.slides.bringForward = bringForward
+  forCloud.slides.moveBackward = moveBackward
   forCloud.slides.beginDrag = beginDrag
   forCloud.slides.dragElement = dragElement
   forCloud.slides.stopDrag = stopDrag
@@ -255,9 +308,12 @@ firebase.auth().onAuthStateChanged(() => {
         document.getElementsByClassName('edit-slides')[i].onmousedown = function () {
           forCloud.slides.beginDrag(this);
           forCloud.slides.deleteItem(this)
+          forCloud.slides.positionItem(this)
         };
         document.getElementsByClassName('edit-slides')[i].onblur = () => {
           $('delete-item').disabled = true
+          $('bring-front').disabled = true
+          $('move-back').disabled = true
         }
         if (i == document.getElementsByClassName('edit-slides').length - 1) {
           return false
