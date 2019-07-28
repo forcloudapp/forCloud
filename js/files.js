@@ -62,10 +62,18 @@ const storageRef = firebase.storage().ref();
       const fileName = file.name.replace(/[^\w\s]/gi, '')
       const fileRef = storageRef.child(firebase.auth().currentUser.uid).child(fileName)
       const filePath = firebase.auth().currentUser.uid + '/' + fileName
-      fileRef.put(file).then((snapshot) => {
+      let uploadTask = fileRef.put(file)
+      uploadTask.on('state_changed', function (snapshot) {
+        $('files-upload-bar').style.display = 'block'
+        $('files-upload-bar').MaterialProgress.setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+      }, function (error) {
+        console.log(error)
+        $('files-upload-bar').style.display = 'none'
+      }, function () {
         forCloud.files.createFile(fileName, filePath, '/', 'file')
-        render('/')
-      })
+        forCloud.files.render('/')
+        $('files-upload-bar').style.display = 'none'
+      });
     })
   }
 
@@ -110,8 +118,10 @@ const storageRef = firebase.storage().ref();
     let reference = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path)
 
     reference.on('value', value => {
-      if (value.val().folder) {
-        reference = reference.child('files')
+      if (value.exists()) {
+        if (value.val().folder) {
+          reference = reference.child('files')
+        }
       }
     })
 
@@ -228,8 +238,10 @@ const storageRef = firebase.storage().ref();
     let reference = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files')
 
     reference.on('value', value => {
-      if (value.val().folder) {
-        reference = reference.child('files')
+      if (value.exists()) {
+        if (value.val().folder) {
+          reference = reference.child('files')
+        }
       }
     })
 
@@ -304,8 +316,10 @@ const storageRef = firebase.storage().ref();
     let reference = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path)
 
     reference.on('value', value => {
-      if (value.val().folder) {
-        reference = reference.child('files')
+      if (value.exists()) {
+        if (value.val().folder) {
+          reference = reference.child('files')
+        }
       }
     })
 
@@ -377,6 +391,9 @@ const storageRef = firebase.storage().ref();
 
 firebase.auth().onAuthStateChanged(() => {
   forCloud.files.render('/')
+  $('upload_file_button').addEventListener('click', (event) => {
+    forCloud.files.uploadFile()
+  })
 })
 
 $('close-file-move').addEventListener('click', (event) => {
@@ -386,10 +403,6 @@ $('close-file-move').addEventListener('click', (event) => {
 
 $('files-search').addEventListener('keydown', (event) => {
   forCloud.files.searchRender()
-})
-
-$('upload_file_button').addEventListener('click', (event) => {
-  forCloud.files.uploadFile()
 })
 
 $('new_folder').addEventListener('click', (event) => {

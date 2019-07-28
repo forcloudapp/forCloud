@@ -95,6 +95,8 @@ forCloud.files = {}
     const selector = document.createElement('input')
 
     selector.type = 'file'
+    
+    selector.click()
 
     const promise = new Promise(resolve => {
       selector.addEventListener('change', event => {
@@ -102,7 +104,6 @@ forCloud.files = {}
       })
     })
 
-    selector.click()
 
     return promise
   }
