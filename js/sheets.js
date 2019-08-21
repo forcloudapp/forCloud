@@ -12,8 +12,8 @@ forCloud.sheets = {}
 
     async function newRow() {
         let newTr = document.createElement('tr');
-        $("sheets-editor").getElementsByTagName("tbody")[0].appendChild(newTr);
-        for (let i = 0; i < $("sheets-editor").getElementsByTagName("tbody")[0].getElementsByTagName('tr')[0].getElementsByTagName('th').length; i++) {
+        $('sheets-editor').getElementsByTagName('tbody')[0].appendChild(newTr);
+        for (let i = 0; i < $('sheets-editor').getElementsByTagName('tbody')[0].getElementsByTagName('tr')[0].getElementsByTagName('th').length; i++) {
             newTh(newTr);
         }
         forCloud.sheets.updateDeleteButton()
@@ -21,7 +21,7 @@ forCloud.sheets = {}
 
     async function deleteRow(element) {
         let deleteItem = $('delete-row').cloneNode(true);
-        $('delete-row').disabled = false
+        $('delete-row').removeAttribute('disabled')
         $('delete-row').addEventListener('click', (event) => {
             element.remove()
             $('delete-row').parentNode.replaceChild(deleteItem, $('delete-row'));
@@ -31,11 +31,11 @@ forCloud.sheets = {}
 
     async function insertRowAbove(element) {
         let insertRow = $('insert-row-above').cloneNode(true);
-        $('insert-row-above').disabled = false
+        $('insert-row-above').removeAttribute('disabled')
         $('insert-row-above').addEventListener('click', (event) => {
             let newTr = document.createElement('tr');
-            $("sheets-editor").getElementsByTagName("tbody")[0].appendChild(newTr);
-            for (let i = 0; i < $("sheets-editor").getElementsByTagName("tbody")[0].getElementsByTagName('tr')[0].getElementsByTagName('th').length; i++) {
+            $('sheets-editor').getElementsByTagName('tbody')[0].appendChild(newTr);
+            for (let i = 0; i < $('sheets-editor').getElementsByTagName('tbody')[0].getElementsByTagName('tr')[0].getElementsByTagName('th').length; i++) {
                 newTh(newTr);
             }
             element.parentNode.insertBefore(newTr, element)
@@ -46,11 +46,11 @@ forCloud.sheets = {}
 
     async function insertRowBelow(element) {
         let insertRow = $('insert-row-below').cloneNode(true);
-        $('insert-row-below').disabled = false
+        $('insert-row-below').removeAttribute('disabled')
         $('insert-row-below').addEventListener('click', (event) => {
             let newTr = document.createElement('tr');
-            $("sheets-editor").getElementsByTagName("tbody")[0].appendChild(newTr);
-            for (let i = 0; i < $("sheets-editor").getElementsByTagName("tbody")[0].getElementsByTagName('tr')[0].getElementsByTagName('th').length; i++) {
+            $('sheets-editor').getElementsByTagName('tbody')[0].appendChild(newTr);
+            for (let i = 0; i < $('sheets-editor').getElementsByTagName('tbody')[0].getElementsByTagName('tr')[0].getElementsByTagName('th').length; i++) {
                 newTh(newTr);
             }
             element.parentNode.insertBefore(newTr, element.nextSibling)
@@ -61,7 +61,7 @@ forCloud.sheets = {}
 
     async function insertColumnLeft(elements) {
         let insertColumn = $('insert-column-left').cloneNode(true);
-        $('insert-column-left').disabled = false
+        $('insert-column-left').removeAttribute('disabled')
         $('insert-column-left').addEventListener('click', (event) => {
             elements.forEach(element => {
                 let newCell = document.createElement('th');
@@ -75,7 +75,7 @@ forCloud.sheets = {}
 
     async function insertColumnRight(elements) {
         let insertColumn = $('insert-column-right').cloneNode(true);
-        $('insert-column-right').disabled = false
+        $('insert-column-right').removeAttribute('disabled')
         $('insert-column-right').addEventListener('click', (event) => {
             elements.forEach(element => {
                 let newCell = document.createElement('th');
@@ -89,7 +89,7 @@ forCloud.sheets = {}
 
     async function deleteColumn(elements) {
         let deleteItem = $('delete-column').cloneNode(true);
-        $('delete-column').disabled = false
+        $('delete-column').removeAttribute('disabled')
         $('delete-column').addEventListener('click', (event) => {
             for (let i = 0; i < elements.length; i++) {
                 elements[i].remove()
@@ -100,49 +100,49 @@ forCloud.sheets = {}
     }
 
     async function updateDeleteButton() {
-        for (let i = 0; i < $("sheets-editor").getElementsByTagName('tr').length; i++) {
-            $("sheets-editor").getElementsByTagName('tr')[i].onmousedown = () => {
+        for (let i = 0; i < $('sheets-editor').getElementsByTagName('tr').length; i++) {
+            $('sheets-editor').getElementsByTagName('tr')[i].onmousedown = () => {
                 let deleteItem = $('delete-row').cloneNode(true);
                 $('delete-row').parentNode.replaceChild(deleteItem, $('delete-row'))
-                forCloud.sheets.deleteRow($("sheets-editor").getElementsByTagName('tr')[i])
+                forCloud.sheets.deleteRow($('sheets-editor').getElementsByTagName('tr')[i])
 
                 let insertRowAboveButton = $('insert-row-above').cloneNode(true);
                 $('insert-row-above').parentNode.replaceChild(insertRowAboveButton, $('insert-row-above'))
-                forCloud.sheets.insertRowAbove($("sheets-editor").getElementsByTagName('tr')[i])
+                forCloud.sheets.insertRowAbove($('sheets-editor').getElementsByTagName('tr')[i])
 
                 let insertRowBelowButton = $('insert-row-below').cloneNode(true);
                 $('insert-row-below').parentNode.replaceChild(insertRowBelowButton, $('insert-row-below'))
-                forCloud.sheets.insertRowBelow($("sheets-editor").getElementsByTagName('tr')[i])
+                forCloud.sheets.insertRowBelow($('sheets-editor').getElementsByTagName('tr')[i])
             }
-            $("sheets-editor").getElementsByTagName('tr')[i].onblur = () => {
-                $('delete-row').disabled = true
-                $('insert-row-above').disabled = true
-                $('insert-row-below').disabled = true
+            $('sheets-editor').getElementsByTagName('tr')[i].onblur = () => {
+                $('delete-row').setAttribute('disabled', '');
+                $('insert-row-above').setAttribute('disabled', '');
+                $('insert-row-below').setAttribute('disabled', '');
             }
         }
-        for (let i = 0; i < $("sheets-editor").getElementsByTagName('th').length; i++) {
-            $("sheets-editor").getElementsByTagName('th')[i].onmousedown = () => {
+        for (let i = 0; i < $('sheets-editor').getElementsByTagName('th').length; i++) {
+            $('sheets-editor').getElementsByTagName('th')[i].onmousedown = () => {
                 let deleteItem = $('delete-cell').cloneNode(true);
                 $('delete-cell').parentNode.replaceChild(deleteItem, $('delete-cell'));
-                forCloud.sheets.deleteCell($("sheets-editor").getElementsByTagName('th')[i])
+                forCloud.sheets.deleteCell($('sheets-editor').getElementsByTagName('th')[i])
             }
-            $("sheets-editor").getElementsByTagName('th')[i].onblur = () => {
-                $('delete-cell').disabled = true
-                $('delete-column').disabled = true
-                $('insert-column-left').disabled = true
-                $('insert-column-right').disabled = true
+            $('sheets-editor').getElementsByTagName('th')[i].onblur = () => {
+                $('delete-cell').setAttribute('disabled', '');
+                $('delete-column').setAttribute('disabled', '');
+                $('insert-column-left').setAttribute('disabled', '');
+                $('insert-column-right').setAttribute('disabled', '');
 
             }
         }
-        for (let i = 0; i < $("sheets-editor").getElementsByTagName('tr').length; i++) {
-            for (let j = 0; j < $("sheets-editor").getElementsByTagName('tr')[i].getElementsByTagName('th').length; j++) {
-                $("sheets-editor").getElementsByTagName('tr')[i].getElementsByTagName('th')[j].onmouseup = () => {
+        for (let i = 0; i < $('sheets-editor').getElementsByTagName('tr').length; i++) {
+            for (let j = 0; j < $('sheets-editor').getElementsByTagName('tr')[i].getElementsByTagName('th').length; j++) {
+                $('sheets-editor').getElementsByTagName('tr')[i].getElementsByTagName('th')[j].onmouseup = () => {
                     let deleteItem = $('delete-column').cloneNode(true);
                     $('delete-column').parentNode.replaceChild(deleteItem, $('delete-column'));
                     let columnArray = []
                     let columnIndex = j;
-                    for (let x = 0; x < $("sheets-editor").getElementsByTagName('tr').length; x++) {
-                        columnArray.push($("sheets-editor").getElementsByTagName('tr')[x].getElementsByTagName('th')[columnIndex])
+                    for (let x = 0; x < $('sheets-editor').getElementsByTagName('tr').length; x++) {
+                        columnArray.push($('sheets-editor').getElementsByTagName('tr')[x].getElementsByTagName('th')[columnIndex])
                     }
                     forCloud.sheets.deleteColumn(columnArray)
 
@@ -160,17 +160,17 @@ forCloud.sheets = {}
 
     async function deleteCell(element) {
         let deleteItem = $('delete-cell').cloneNode(true);
-        $('delete-cell').disabled = false
+        $('delete-cell').removeAttribute('disabled')
         $('delete-cell').addEventListener('click', (event) => {
-            element.textContent = ""
+            element.textContent = ''
             $('delete-cell').parentNode.replaceChild(deleteItem, $('delete-cell'));
         })
         forCloud.sheets.updateDeleteButton()
     }
 
     async function newColumn() {
-        for (let i = 0; i < $("sheets-editor").getElementsByTagName('tr').length; i++) {
-            newTh($("sheets-editor").getElementsByTagName("tbody")[0].getElementsByTagName('tr')[i]);
+        for (let i = 0; i < $('sheets-editor').getElementsByTagName('tr').length; i++) {
+            newTh($('sheets-editor').getElementsByTagName('tbody')[0].getElementsByTagName('tr')[i]);
         }
         forCloud.sheets.updateDeleteButton()
     }
