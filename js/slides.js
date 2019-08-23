@@ -7,9 +7,7 @@ let current_slide = 0
 let slide = $('slide')
 let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
 
-
 {
-
   function stopDrag() {
     document.onmousemove = null
     document.onmouseup = null

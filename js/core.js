@@ -14,8 +14,6 @@ const forCloud = {}
 forCloud.files = {}
 
 {
-
-
   // Element functions.
 
   function $ (id) {
@@ -48,11 +46,6 @@ forCloud.files = {}
     return firebase.auth().signOut()
   }
 
-  async function createFile(name, content, path, type) {
-    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
-    return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
-  }
-
   function stringifyUsername (username) {
     return `${username}@forcloud.app`
   }
@@ -61,7 +54,35 @@ forCloud.files = {}
     return email.replace('@forcloud.app', '')
   }
 
+  async function getUser () {
+    return new Promise(async resolve => {
+      firebase.auth().onAuthStateChanged(async user => {
+        resolve(user)
+      })
+    })
+  }
+
+  async function getUserEmail () {
+    return (await getUser()).email
+  }
+
+  async function getUsername () {
+    return parseEmail(await getUserEmail())
+  }
+
+  async function createFile(name, content, path, type) {
+    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
+    return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
+  }
+
   // Misc. functions.
+
+  function convertTime (time) {
+    const date = new Date(time)
+
+    return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`
+  }
+
   function getQueryVariable(variable) {
     var query = window.location.search.substring(1)
     var vars = query.split('&')
@@ -82,7 +103,7 @@ forCloud.files = {}
     i.appendChild(text)
     return i
   }
-  
+
   function encrypt(content) {
     return CryptoJS.AES.encrypt(content, firebase.auth().currentUser.uid) + ""
   }
@@ -95,7 +116,7 @@ forCloud.files = {}
     const selector = document.createElement('input')
 
     selector.type = 'file'
-    
+
     selector.click()
 
     const promise = new Promise(resolve => {
@@ -136,10 +157,14 @@ forCloud.files = {}
   forCloud.signOut = signOut
   forCloud.stringifyUsername = stringifyUsername
   forCloud.parseEmail = parseEmail
+  forCloud.getUser = getUser
+  forCloud.getUserEmail = getUserEmail
+  forCloud.getUsername = getUsername
   forCloud.createIcon = createIcon
 
+  forCloud.convertTime = convertTime
   forCloud.selectFile = selectFile
   forCloud.pickColor = pickColor
-  forCloud.files.createFile = createFile  
-  forCloud.getQueryVariable = getQueryVariable  
+  forCloud.files.createFile = createFile
+  forCloud.getQueryVariable = getQueryVariable
 }
