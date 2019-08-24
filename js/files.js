@@ -5,12 +5,15 @@ const storageRef = firebase.storage().ref();
 {
 
   function backFromFolder(path) {
+    let folderPath = path.split('/')
+    folderPath.pop()
     let splitPath = path.split('/')
     splitPath.pop()
     splitPath.pop()
     if (splitPath.length < 1) {
       $('folder-back').style.display = 'none';
       forCloud.files.render('/')
+      updateNewFolderButton('/')
     } else {
       forCloud.files.render(splitPath.join('/'))
       let backButton = $('folder-back').cloneNode(true);
@@ -18,6 +21,7 @@ const storageRef = firebase.storage().ref();
       backButton.addEventListener('click', (event) => {
         forCloud.files.backFromFolder(splitPath.join('/'))
       })
+      updateNewFolderButton(folderPath)
     }
   }
 
@@ -192,6 +196,7 @@ const storageRef = firebase.storage().ref();
             backButton.addEventListener('click', (event) => {
               forCloud.files.backFromFolder(folderPath)
             })
+            updateNewFolderButton(folderPath + '/files/')
           })
         } else {
           titleContainer.addEventListener('click', () => {
@@ -269,8 +274,9 @@ const storageRef = firebase.storage().ref();
             titleContainer.addEventListener('click', () => {
               render(folderPath)
               $('folder-back').addEventListener('click', (event) => {
-                forCloud.files.backFromFolder(folder)
+                forCloud.files.backFromFolder(folderPath)
               })
+              updateNewFolderButton(folderPath + '/files/')
             })
           } else {
             titleContainer.addEventListener('click', () => {
@@ -375,6 +381,14 @@ const storageRef = firebase.storage().ref();
     })
   }
 
+  function updateNewFolderButton (path) {
+    let newFolderButton = $('new_folder').cloneNode(true)
+    $('new_folder').parentNode.replaceChild(newFolderButton, $('new_folder'));
+    $('new_folder').addEventListener('click', (event) => {
+      forCloud.files.createFolder(prompt('Name your new folder'), path)
+    })
+  }
+
   forCloud.files.createFolder = createFolder
   forCloud.files.render = render
   forCloud.files.searchRender = searchRender
@@ -387,6 +401,7 @@ const storageRef = firebase.storage().ref();
   forCloud.files.moveFolder = moveFolder
   forCloud.files.renameFolder = renameFolder
   forCloud.files.backFromFolder = backFromFolder
+  forCloud.files.updateNewFolderButton = updateNewFolderButton
 }
 
 firebase.auth().onAuthStateChanged(() => {
@@ -405,6 +420,4 @@ $('files-search').addEventListener('keydown', (event) => {
   forCloud.files.searchRender()
 })
 
-$('new_folder').addEventListener('click', (event) => {
-  forCloud.files.createFolder(prompt('Name your new folder'), '/')
-})
+forCloud.files.updateNewFolderButton('/')
