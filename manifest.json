@@ -1,0 +1,8 @@
+{
+    "name": "forCloud",
+    "short_name": "forCloud",
+    "description": "forCloud: a new cloud storage service!",
+    "lang": "en-US",
+    "start_url": "/",
+    "display": "standalone"
+  }
