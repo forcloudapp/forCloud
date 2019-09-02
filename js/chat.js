@@ -26,11 +26,15 @@ firebase.database().ref('chat').on('child_added', async data => {
 async function chatNotification(data) {
   if (data.child('message').val().includes("@" + await forCloud.getUsername())) {
     if (Notification.permission === "granted") {
-      var notification = new Notification(data.child('message').val());
+      var notification = new Notification(data.child('message').val(), {
+        icon: "../images/favicon.ico"
+      })
     } else if (Notification.permission !== "denied") {
       Notification.requestPermission().then(function (permission) {
         if (permission === "granted") {
-          var notification = new Notification(data.child('message').val());
+          var notification = new Notification(data.child('message').val(), {
+            icon: "../images/favicon.ico"
+          })
         }
       });
     }
