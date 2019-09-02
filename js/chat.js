@@ -17,5 +17,29 @@ firebase.database().ref('chat').on('child_added', async data => {
 
   message.textContent = `[${forCloud.convertTime(data.child('time').val())}] ${data.child('user').val()}: ${data.child('message').val()}`
 
+  if (data.child('message').val().includes("@" + await forCloud.getUsername())) {
+    message.style.backgroundColor = "yellow"
+  }
   $('chat-messages').insertBefore(message, $('chat-messages').firstChild)
 })
+
+async function chatNotification(data) {
+  if (data.child('message').val().includes("@" + await forCloud.getUsername())) {
+    if (Notification.permission === "granted") {
+      var notification = new Notification(data.child('message').val());
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then(function (permission) {
+        if (permission === "granted") {
+          var notification = new Notification(data.child('message').val());
+        }
+      });
+    }
+  }
+}
+
+firebase.database().ref('chat')
+  .orderByChild('time')
+  .startAt(Date.now())
+  .on('child_added', snapshot => {
+    chatNotification(snapshot)
+  })
