@@ -2,7 +2,10 @@
 
 forCloud.sheets = {}
 
+const formulaVariables = {}
+
 {
+
     async function newTh(place) {
         let newTh = document.createElement('th');
         place.appendChild(newTh);
@@ -158,6 +161,18 @@ forCloud.sheets = {}
         }
     }
 
+    function updateCells () {
+        for (const cell of $('sheets-editor').getElementsByTagName('th')) {
+            formulaVariables[`${['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'][[...cell.parentElement.children].indexOf(cell)]}${[...cell.parentElement.parentElement.children].indexOf(cell.parentElement) + 1}`] = cell.textContent
+        }
+
+        for (const cell of $('sheets-editor').getElementsByTagName('th')) {
+            if (cell.dataset.formula) {
+                cell.textContent = math.evaluate(cell.dataset.formula, formulaVariables)
+            }
+        }
+    }
+
     async function deleteCell(element) {
         let deleteItem = $('delete-cell').cloneNode(true);
         $('delete-cell').removeAttribute('disabled')
@@ -172,6 +187,7 @@ forCloud.sheets = {}
         for (let i = 0; i < $('sheets-editor').getElementsByTagName('tr').length; i++) {
             newTh($('sheets-editor').getElementsByTagName('tbody')[0].getElementsByTagName('tr')[i]);
         }
+
         forCloud.sheets.updateDeleteButton()
     }
 
@@ -190,6 +206,7 @@ forCloud.sheets = {}
     forCloud.sheets.newColumn = newColumn
     forCloud.sheets.newRow = newRow
     forCloud.sheets.deleteRow = deleteRow
+    forCloud.sheets.updateCells = updateCells
     forCloud.sheets.deleteCell = deleteCell
     forCloud.sheets.deleteColumn = deleteColumn
     forCloud.sheets.updateDeleteButton = updateDeleteButton
@@ -197,29 +214,70 @@ forCloud.sheets = {}
     forCloud.sheets.insertRowBelow = insertRowBelow
     forCloud.sheets.insertColumnLeft = insertColumnLeft
     forCloud.sheets.insertColumnRight = insertColumnRight
-
 }
 
-$('save-spreadsheet').addEventListener('click', () => {
+$('save-spreadsheet').addEventListener('click', async () => {
     forCloud.sheets.saveSpreadsheet()
 })
 
-$('add-row').addEventListener('click', () => {
+$('add-row').addEventListener('click', async () => {
     forCloud.sheets.newRow()
 })
 
-$('add-column').addEventListener('click', () => {
+$('add-column').addEventListener('click', async () => {
     forCloud.sheets.newColumn()
+})
+
+$('sheets-editor').addEventListener('input', async () => {
+    forCloud.sheets.updateCells()
 })
 
 firebase.auth().onAuthStateChanged(() => {
     if (forCloud.getQueryVariable('file') !== false) {
         firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').on('value', (snapshot) => {
             $('sheets-editor').innerHTML = forCloud.decrypt(snapshot.val())
+
+            for (const cell of $('sheets-editor').getElementsByTagName('th')) {
+                console.log(cell)
+        
+                cell.addEventListener('dblclick', async () => {
+                    const formula = window.prompt('Formula', cell.dataset.formula ? cell.dataset.formula : '')
+            
+                    if (formula === '') {
+                        if (confirm('Are you sure you want to delete this formula?')) {
+                            delete cell.dataset.formula
+                        }
+                    } else if (formula) {
+                        cell.dataset.formula = formula
+                        forCloud.sheets.updateCells()
+                    }
+                })
+            }
+
             forCloud.sheets.updateDeleteButton()
+
             $('spreadsheet-name-label').style.display = 'none'
         })
     } else {
         forCloud.sheets.updateDeleteButton()
+
+        for (const cell of $('sheets-editor').getElementsByTagName('th')) {
+            console.log(cell)
+    
+            cell.addEventListener('dblclick', async () => {
+                const formula = window.prompt('Formula', cell.dataset.formula ? cell.dataset.formula : '')
+        
+                if (formula === '') {
+                    if (confirm('Are you sure you want to delete this formula?')) {
+                        delete cell.dataset.formula
+                    }
+                } else if (formula) {
+                    cell.dataset.formula = formula
+                    forCloud.sheets.updateCells()
+                }
+            })
+        }
     }
+
+    forCloud.sheets.updateCells()
 })
