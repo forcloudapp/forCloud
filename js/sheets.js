@@ -12,7 +12,7 @@ const formulaVariables = {}
         newTh.innerHTML = ' ';
         newTh.addEventListener('dblclick', async () => {
             const formula = window.prompt('Formula', newTh.dataset.formula ? newTh.dataset.formula : '')
-    
+
             if (formula === '') {
                 if (confirm('Are you sure you want to delete this formula?')) {
                     delete newTh.dataset.formula
@@ -83,7 +83,7 @@ const formulaVariables = {}
                 newCell.innerHTML = ' ';
                 newCell.addEventListener('dblclick', async () => {
                     const formula = window.prompt('Formula', newCell.dataset.formula ? newCell.dataset.formula : '')
-            
+
                     if (formula === '') {
                         if (confirm('Are you sure you want to delete this formula?')) {
                             delete newCell.dataset.formula
@@ -109,7 +109,7 @@ const formulaVariables = {}
                 newCell.innerHTML = ' ';
                 newCell.addEventListener('dblclick', async () => {
                     const formula = window.prompt('Formula', newCell.dataset.formula ? newCell.dataset.formula : '')
-            
+
                     if (formula === '') {
                         if (confirm('Are you sure you want to delete this formula?')) {
                             delete newCell.dataset.formula
@@ -197,9 +197,22 @@ const formulaVariables = {}
         }
     }
 
-    function updateCells () {
+    function colName(number) {
+        var orderA = 'A'.charCodeAt(0);
+        var orderZ = 'Z'.charCodeAt(0);
+        var length = orderZ - orderA + 1;
+      
+        var string = "";
+        while(number >= 0) {
+            string = String.fromCharCode(number % length + orderA) + string;
+            number = Math.floor(number / length) - 1;
+        }
+        return string;
+    }
+
+    function updateCells() {
         for (const cell of $('sheets-editor').getElementsByTagName('th')) {
-            formulaVariables[`${['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'][[...cell.parentElement.children].indexOf(cell)]}${[...cell.parentElement.parentElement.children].indexOf(cell.parentElement) + 1}`] = cell.textContent
+                formulaVariables[`${forCloud.sheets.colName([...cell.parentElement.children].indexOf(cell))}${[...cell.parentElement.parentElement.children].indexOf(cell.parentElement) + 1}`] = cell.textContent
         }
 
         for (const cell of $('sheets-editor').getElementsByTagName('th')) {
@@ -242,6 +255,7 @@ const formulaVariables = {}
     forCloud.sheets.newColumn = newColumn
     forCloud.sheets.newRow = newRow
     forCloud.sheets.deleteRow = deleteRow
+    forCloud.sheets.colName = colName
     forCloud.sheets.updateCells = updateCells
     forCloud.sheets.deleteCell = deleteCell
     forCloud.sheets.deleteColumn = deleteColumn
@@ -274,10 +288,10 @@ firebase.auth().onAuthStateChanged(() => {
             $('sheets-editor').innerHTML = forCloud.decrypt(snapshot.val())
 
             for (const cell of $('sheets-editor').getElementsByTagName('th')) {
-        
+
                 cell.addEventListener('dblclick', async () => {
                     const formula = window.prompt('Formula', cell.dataset.formula ? cell.dataset.formula : '')
-            
+
                     if (formula === '') {
                         if (confirm('Are you sure you want to delete this formula?')) {
                             delete cell.dataset.formula
@@ -297,10 +311,10 @@ firebase.auth().onAuthStateChanged(() => {
         forCloud.sheets.updateDeleteButton()
 
         for (const cell of $('sheets-editor').getElementsByTagName('th')) {
-    
+
             cell.addEventListener('dblclick', async () => {
                 const formula = window.prompt('Formula', cell.dataset.formula ? cell.dataset.formula : '')
-        
+
                 if (formula === '') {
                     if (confirm('Are you sure you want to delete this formula?')) {
                         delete cell.dataset.formula
