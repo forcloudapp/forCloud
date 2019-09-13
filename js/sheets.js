@@ -10,6 +10,18 @@ const formulaVariables = {}
         let newTh = document.createElement('th');
         place.appendChild(newTh);
         newTh.innerHTML = ' ';
+        newTh.addEventListener('dblclick', async () => {
+            const formula = window.prompt('Formula', newTh.dataset.formula ? newTh.dataset.formula : '')
+    
+            if (formula === '') {
+                if (confirm('Are you sure you want to delete this formula?')) {
+                    delete newTh.dataset.formula
+                }
+            } else if (formula) {
+                newTh.dataset.formula = formula
+                forCloud.sheets.updateCells()
+            }
+        })
         forCloud.sheets.updateDeleteButton()
     }
 
@@ -69,6 +81,18 @@ const formulaVariables = {}
             elements.forEach(element => {
                 let newCell = document.createElement('th');
                 newCell.innerHTML = ' ';
+                newCell.addEventListener('dblclick', async () => {
+                    const formula = window.prompt('Formula', newCell.dataset.formula ? newCell.dataset.formula : '')
+            
+                    if (formula === '') {
+                        if (confirm('Are you sure you want to delete this formula?')) {
+                            delete newCell.dataset.formula
+                        }
+                    } else if (formula) {
+                        newCell.dataset.formula = formula
+                        forCloud.sheets.updateCells()
+                    }
+                })
                 element.parentNode.insertBefore(newCell, element)
             });
             $('insert-column-left').parentNode.replaceChild(insertColumn, $('insert-column-left'));
@@ -83,6 +107,18 @@ const formulaVariables = {}
             elements.forEach(element => {
                 let newCell = document.createElement('th');
                 newCell.innerHTML = ' ';
+                newCell.addEventListener('dblclick', async () => {
+                    const formula = window.prompt('Formula', newCell.dataset.formula ? newCell.dataset.formula : '')
+            
+                    if (formula === '') {
+                        if (confirm('Are you sure you want to delete this formula?')) {
+                            delete newCell.dataset.formula
+                        }
+                    } else if (formula) {
+                        newCell.dataset.formula = formula
+                        forCloud.sheets.updateCells()
+                    }
+                })
                 element.parentNode.insertBefore(newCell, element.nextSibling)
             });
             $('insert-column-right').parentNode.replaceChild(insertColumn, $('insert-column-right'));
@@ -238,7 +274,6 @@ firebase.auth().onAuthStateChanged(() => {
             $('sheets-editor').innerHTML = forCloud.decrypt(snapshot.val())
 
             for (const cell of $('sheets-editor').getElementsByTagName('th')) {
-                console.log(cell)
         
                 cell.addEventListener('dblclick', async () => {
                     const formula = window.prompt('Formula', cell.dataset.formula ? cell.dataset.formula : '')
@@ -262,7 +297,6 @@ firebase.auth().onAuthStateChanged(() => {
         forCloud.sheets.updateDeleteButton()
 
         for (const cell of $('sheets-editor').getElementsByTagName('th')) {
-            console.log(cell)
     
             cell.addEventListener('dblclick', async () => {
                 const formula = window.prompt('Formula', cell.dataset.formula ? cell.dataset.formula : '')
