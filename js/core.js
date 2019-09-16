@@ -70,7 +70,10 @@ forCloud.files = {}
     return parseEmail(await getUserEmail())
   }
 
-  async function createFile(name, content, path, type) {
+  async function createFile(name, content, path, type, key) {
+    if (typeof key !== "undefined") {
+      firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('key').set(key)
+    }
     firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
     return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
   }
@@ -104,12 +107,19 @@ forCloud.files = {}
     return i
   }
 
-  function encrypt(content) {
-    return CryptoJS.AES.encrypt(content, firebase.auth().currentUser.uid) + ""
+  function uuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
-  function decrypt(content) {
-    return CryptoJS.AES.decrypt(content, firebase.auth().currentUser.uid).toString(CryptoJS.enc.Utf8);
+  function encrypt(content, key) {
+    return CryptoJS.AES.encrypt(content, key) + ""
+  }
+
+  function decrypt(content, key) {
+    return CryptoJS.AES.decrypt(content, key).toString(CryptoJS.enc.Utf8);
   }
 
   async function selectFile () {
@@ -152,6 +162,8 @@ forCloud.files = {}
   forCloud.store = store
   forCloud.encrypt = encrypt
   forCloud.decrypt = decrypt
+  forCloud.uuid = uuid
+
 
   forCloud.signIn = signIn
   forCloud.signOut = signOut
