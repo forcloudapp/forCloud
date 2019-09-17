@@ -26,7 +26,13 @@ const storageRef = firebase.storage().ref();
   }
 
   function moveFile(path, file) {
-    forCloud.files.createFile(file.key, file.val().content, path, file.val().type)
+    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child('key').on('value', (snapshot) => {
+      if (typeof snapshot !== "undefined") {
+        forCloud.files.createFile(file.key, file.val().content, path, file.val().type, file.val().key)
+      } else {
+        forCloud.files.createFile(file.key, file.val().content, path, file.val().type)
+      }
+    })
     forCloud.files.deleteFile('/' + file.ref.path.toString(), file)
     forCloud.files.render('/')
   }
@@ -89,7 +95,13 @@ const storageRef = firebase.storage().ref();
     if (filePath.length < 1) {
       filePath = ['/']
     }
-    forCloud.files.createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type)
+    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(filePath.toString().split(',').join('/')).child('key').on('value', (snapshot) => {
+      if (typeof snapshot !== "undefined") {
+        forCloud.files.createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type, file.val().key)
+      } else {
+        forCloud.files.createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type)
+      }
+    })
     forCloud.files.deleteFile('/' + path)
     forCloud.files.render('/')
   }
