@@ -14,23 +14,26 @@ const forCloud = {}
 forCloud.files = {}
 
 {
+
+  let currentFileContext
+
   // Element functions.
 
-  function $ (id) {
+  function $(id) {
     return document.getElementById(id)
   }
 
-  function $$ (selector) {
+  function $$(selector) {
     return document.querySelector(selector)
   }
 
   // Storage functions.
 
-  function get (name) {
+  function get(name) {
     return JSON.parse(localStorage.getItem(`forCloudStorage_${name}`))
   }
 
-  function store (name, value) {
+  function store(name, value) {
     localStorage.setItem(`forCloudStorage_${name}`, JSON.stringify(value))
 
     return value
@@ -38,23 +41,23 @@ forCloud.files = {}
 
   // Account functions.
 
-  async function signIn (username, password) {
+  async function signIn(username, password) {
     return firebase.auth().signInWithEmailAndPassword(stringifyUsername(username), password)
   }
 
-  async function signOut () {
+  async function signOut() {
     return firebase.auth().signOut()
   }
 
-  function stringifyUsername (username) {
+  function stringifyUsername(username) {
     return `${username}@forcloud.app`
   }
 
-  function parseEmail (email) {
+  function parseEmail(email) {
     return email.replace('@forcloud.app', '')
   }
 
-  async function getUser () {
+  async function getUser() {
     return new Promise(async resolve => {
       firebase.auth().onAuthStateChanged(async user => {
         resolve(user)
@@ -62,25 +65,42 @@ forCloud.files = {}
     })
   }
 
-  async function getUserEmail () {
+  async function getUserEmail() {
     return (await getUser()).email
   }
 
-  async function getUsername () {
+  async function getUsername() {
     return parseEmail(await getUserEmail())
   }
 
-  async function createFile(name, content, path, type, key) {
+  async function createFile(name, content, path, type, key, users) {
     if (typeof key !== "undefined") {
-      firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('key').set(key)
+      forCloud.files.currentFileContext.child(path).child(name).child('key').set(key)
     }
-    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('type').set(type)
-    return firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(name).child('content').set(content)
+    if (typeof users !== "undefined") {
+      Object.keys(users).forEach(function (user) {
+        forCloud.files.currentFileContext.child(path).child(name).child('users').child(user).set('true')
+      })
+    }
+    forCloud.files.currentFileContext.child(path).child(name).child('type').set(type)
+    return forCloud.files.currentFileContext.child(path).child(name).child('content').set(content)
+  }
+
+  async function createSharedFile(content, path, type, key, users) {
+    if (typeof key !== "undefined") {
+      firebase.database().ref('shared-files').child('shared').child('files').child(path).child('key').set(key)
+    }
+    firebase.database().ref('shared-files').child('shared').child('files').child(path).child('type').set(type)
+    firebase.database().ref('shared-files').child('shared').child('files').child(path).child('content').set(content)
+
+    users.forEach(function (user) {
+      firebase.database().ref('shared-files').child('shared').child('files').child(path).child('users').child(user).set('true')
+    })
   }
 
   // Misc. functions.
 
-  function convertTime (time) {
+  function convertTime(time) {
     const date = new Date(time)
 
     return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`
@@ -98,7 +118,7 @@ forCloud.files = {}
     return false
   }
 
-  function createIcon (icon, size) {
+  function createIcon(icon, size) {
     let i = document.createElement('i')
     i.className = 'material-icons'
     i.style.fontSize = size
@@ -108,7 +128,7 @@ forCloud.files = {}
   }
 
   function uuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
@@ -122,7 +142,7 @@ forCloud.files = {}
     return CryptoJS.AES.decrypt(content, key).toString(CryptoJS.enc.Utf8);
   }
 
-  async function selectFile () {
+  async function selectFile() {
     const selector = document.createElement('input')
 
     selector.type = 'file'
@@ -139,7 +159,7 @@ forCloud.files = {}
     return promise
   }
 
-  async function pickColor () {
+  async function pickColor() {
     const picker = document.createElement('input')
 
     picker.type = 'color'
@@ -178,5 +198,11 @@ forCloud.files = {}
   forCloud.selectFile = selectFile
   forCloud.pickColor = pickColor
   forCloud.files.createFile = createFile
+  forCloud.files.createSharedFile = createSharedFile
   forCloud.getQueryVariable = getQueryVariable
+  forCloud.files.currentFileContext = currentFileContext
 }
+
+firebase.auth().onAuthStateChanged(() => {
+  forCloud.files.currentFileContext = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files')
+})

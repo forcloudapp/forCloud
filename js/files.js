@@ -4,6 +4,8 @@ const storageRef = firebase.storage().ref();
 
 {
 
+  let sharedCurrently;
+
   function backFromFolder(path) {
     let folderPath = path.split('/')
     folderPath.pop()
@@ -26,28 +28,94 @@ const storageRef = firebase.storage().ref();
   }
 
   function moveFile(path, file) {
-    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child('key').on('value', (snapshot) => {
+    forCloud.files.currentFileContext.child(path).child('key').on('value', (snapshot) => {
       if (typeof snapshot !== "undefined") {
-        forCloud.files.createFile(file.key, file.val().content, path, file.val().type, file.val().key)
+        forCloud.files.createFile(file.key, file.val().content, path, file.val().type, file.val().key, file.val().users ? file.val().users : undefined)
       } else {
-        forCloud.files.createFile(file.key, file.val().content, path, file.val().type)
+        forCloud.files.createFile(file.key, file.val().content, path, file.val().type, file.val().users ? file.val().users : undefined)
       }
     })
     forCloud.files.deleteFile('/' + file.ref.path.toString(), file)
     forCloud.files.render('/')
   }
 
-  function moveFolder(path, file, folderName, filePath) {
-    if (typeof file.val().files !== 'undefined') {
-      firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(folderName).set({
-        folder: true,
-        files: file.val().files
+  async function switchFileContext(fileContext) {
+    forCloud.files.currentFileContext = fileContext
+    forCloud.files.render('/')
+  }
+
+
+  function shareFile(file, path) {
+    let users = prompt('Users to share with (seperate with ,)').split(",")
+    if (file.val().users) {
+      users.forEach(user => {
+        firebase.database().ref('shared-files').child('shared').child('files').child(path).child('users').child(user).set('true')
       })
     } else {
-      firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path).child(folderName).set({
-        folder: true,
-      })
+      if (file.val().key) {
+        forCloud.files.createSharedFile(file.val().content, file.key, file.val().type, file.val().key, users)
+      } else {
+        forCloud.files.createSharedFile(file.val().content, file.key, file.val().type, users)
+      }
+      forCloud.files.deleteFile('/' + file.ref.path.toString(), file)
+      forCloud.files.render('/')
     }
+  }
+
+  function shareFolder(file, path, filePath) {
+    let users = prompt('Users to share with (seperate with ,)').split(",")
+    if (file.val().users) {
+      users.forEach(user => {
+        firebase.database().ref('shared-files').child('shared').child('files').child(path).child('users').child(user).set('true')
+      })
+    } else {
+      if (typeof file.val().files !== 'undefined') {
+        firebase.database().ref('shared-files').child('shared').child('files').child(path).set({
+          folder: true,
+          files: file.val().files
+        })
+        users.forEach(user => {
+          firebase.database().ref('shared-files').child('shared').child('files').child(path).child('users').child(user).set('true')
+        })
+      } else {
+        firebase.database().ref('shared-files').child('shared').child('files').child(path).set({
+          folder: true,
+        })
+        users.forEach(user => {
+          firebase.database().ref('shared-files').child('shared').child('files').child(path).child('users').child(user).set('true')
+        })
+      }
+      forCloud.files.deleteFile('/' + filePath)
+    }
+  }
+
+  function moveFolder(path, file, folderName, filePath) {
+    if (typeof file.val().users !== 'undefined') {
+      if (typeof file.val().files !== 'undefined') {
+        forCloud.files.currentFileContext.child(path).child(folderName).set({
+          folder: true,
+          files: file.val().files,
+          users: file.val().users
+        })
+      } else {
+        forCloud.files.currentFileContext.child(path).child(folderName).set({
+          folder: true,
+          users: file.val().users
+        })
+      }
+    } else {
+      if (typeof file.val().files !== 'undefined') {
+        forCloud.files.currentFileContext.child(path).child(folderName).set({
+          folder: true,
+          files: file.val().files
+        })
+      } else {
+        forCloud.files.currentFileContext.child(path).child(folderName).set({
+          folder: true,
+        })
+      }
+    }
+
     forCloud.files.deleteFile('/' + filePath)
   }
 
@@ -95,13 +163,11 @@ const storageRef = firebase.storage().ref();
     if (filePath.length < 1) {
       filePath = ['/']
     }
-    firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(filePath.toString().split(',').join('/')).child('key').on('value', (snapshot) => {
-      if (typeof snapshot !== "undefined") {
-        forCloud.files.createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type, file.val().key)
-      } else {
-        forCloud.files.createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type)
-      }
-    })
+    if (file.val().key) {
+      forCloud.files.createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type, file.val().key, file.val().users ? file.val().users : undefined)
+    } else {
+      forCloud.files.createFile(name, file.val().content, filePath.toString().split(',').join('/'), file.val().type, file.val().users ? file.val().users : undefined)
+    }
     forCloud.files.deleteFile('/' + path)
     forCloud.files.render('/')
   }
@@ -110,15 +176,30 @@ const storageRef = firebase.storage().ref();
     let pathArray = path.split('/')
     pathArray.pop()
     let name = prompt('Enter a new name')
-    if (typeof file.val().files !== 'undefined') {
-      firebase.database().ref().child(pathArray.join('/')).child(name).set({
-        folder: true,
-        files: file.val().files
-      })
+    if (file.val().users) {
+      if (typeof file.val().files !== 'undefined') {
+        firebase.database().ref().child(pathArray.join('/')).child(name).set({
+          folder: true,
+          files: file.val().files,
+          users: file.val().users
+        })
+      } else {
+        firebase.database().ref().child(pathArray.join('/')).child(name).set({
+          folder: true,
+          users: file.val().users
+        })
+      }
     } else {
-      firebase.database().ref().child(pathArray.join('/')).child(name).set({
-        folder: true,
-      })
+      if (typeof file.val().files !== 'undefined') {
+        firebase.database().ref().child(pathArray.join('/')).child(name).set({
+          folder: true,
+          files: file.val().files
+        })
+      } else {
+        firebase.database().ref().child(pathArray.join('/')).child(name).set({
+          folder: true,
+        })
+      }
     }
     forCloud.files.deleteFile('/' + path)
     forCloud.files.render('/')
@@ -131,7 +212,13 @@ const storageRef = firebase.storage().ref();
   async function render(path) {
     $('files').innerHTML = ''
 
-    let reference = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path)
+    let reference;
+
+    if (forCloud.files.sharedCurrently && path == '/') {
+      reference = forCloud.files.currentFileContext.child(path).orderByChild('users/' + await forCloud.getUsername()).equalTo('true')
+    } else {
+      reference = forCloud.files.currentFileContext.child(path)
+    }
 
     reference.on('value', value => {
       if (value.exists()) {
@@ -197,6 +284,21 @@ const storageRef = firebase.storage().ref();
         deleteButton.appendChild(moveButtonAction)
         deleteButtonAction.textContent = 'Delete'
         deleteButton.appendChild(deleteButtonAction)
+
+        const shareButtonAction = document.createElement('a')
+        shareButtonAction.classList.add('mdl-button')
+        shareButtonAction.classList.add('mdl-button--colored')
+        shareButtonAction.classList.add('mdl-js-button')
+        shareButtonAction.classList.add('mdl-js-ripple-effect')
+        shareButtonAction.addEventListener('click', (event) => {
+          if (!file.val().folder) {
+            forCloud.files.shareFile(file, filePath.split('/').splice(4).join('/'))
+          } else {
+            forCloud.files.shareFolder(file, filePath.split('/').splice(4).join('/'), filePath)
+          }
+        })
+        shareButtonAction.textContent = 'Share'
+        deleteButton.appendChild(shareButtonAction)
         if (file.val().folder) {
           const folderPath = file.ref_.path.pieces_.splice(3).join('/')
 
@@ -252,7 +354,14 @@ const storageRef = firebase.storage().ref();
     }
     $('files').innerHTML = ''
 
-    let reference = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files')
+    let reference = forCloud.files.currentFileContext
+
+    if (forCloud.files.sharedCurrently) {
+      reference = forCloud.files.currentFileContext.orderByChild('users/' + await forCloud.getUsername()).equalTo('true')
+    } else {
+      reference = forCloud.files.currentFileContext
+    }
+
 
     reference.on('value', value => {
       if (value.exists()) {
@@ -331,7 +440,17 @@ const storageRef = firebase.storage().ref();
     $('files').style.display = 'none'
     $('move-file').innerHTML = ''
 
-    let reference = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files').child(path)
+    if (path == '') {
+      path = '/'
+    } 
+
+    let reference;
+
+    if (forCloud.files.sharedCurrently && path == '/') {
+      reference = forCloud.files.currentFileContext.child(path).orderByChild('users/' + forCloud.parseEmail(firebase.auth().currentUser.email)).equalTo('true')
+    } else {
+      reference = forCloud.files.currentFileContext.child(path)
+    }
 
     reference.on('value', value => {
       if (value.exists()) {
@@ -393,7 +512,7 @@ const storageRef = firebase.storage().ref();
     })
   }
 
-  function updateNewFolderButton (path) {
+  function updateNewFolderButton(path) {
     let newFolderButton = $('new_folder').cloneNode(true)
     $('new_folder').parentNode.replaceChild(newFolderButton, $('new_folder'));
     $('new_folder').addEventListener('click', (event) => {
@@ -401,7 +520,10 @@ const storageRef = firebase.storage().ref();
     })
   }
 
+
   forCloud.files.createFolder = createFolder
+  forCloud.files.shareFile = shareFile
+  forCloud.files.shareFolder = shareFolder
   forCloud.files.render = render
   forCloud.files.searchRender = searchRender
   forCloud.files.renderMove = renderMove
@@ -413,10 +535,13 @@ const storageRef = firebase.storage().ref();
   forCloud.files.moveFolder = moveFolder
   forCloud.files.renameFolder = renameFolder
   forCloud.files.backFromFolder = backFromFolder
+  forCloud.files.switchFileContext = switchFileContext
   forCloud.files.updateNewFolderButton = updateNewFolderButton
+  forCloud.files.sharedCurrently = sharedCurrently
 }
 
 firebase.auth().onAuthStateChanged(() => {
+  forCloud.files.currentFileContext = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files')
   forCloud.files.render('/')
   $('upload_file_button').addEventListener('click', (event) => {
     forCloud.files.uploadFile()
@@ -430,6 +555,16 @@ $('close-file-move').addEventListener('click', (event) => {
 
 $('files-search').addEventListener('keydown', (event) => {
   forCloud.files.searchRender()
+})
+
+$('my-files-button').addEventListener('click', (event) => {
+  forCloud.files.sharedCurrently = false
+  forCloud.files.switchFileContext(firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files'))
+})
+
+$('shared-files-button').addEventListener('click', async (event) => {
+  forCloud.files.sharedCurrently = true
+  forCloud.files.switchFileContext(firebase.database().ref('shared-files').child('shared').child('files'))
 })
 
 forCloud.files.updateNewFolderButton('/')
