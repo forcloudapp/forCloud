@@ -53,7 +53,7 @@ const storageRef = firebase.storage().ref();
       })
     } else {
       if (file.val().key) {
-        forCloud.files.createSharedFile(file.val().content, file.key, file.val().type, file.val().key, users)
+        forCloud.files.createSharedFile(file.val().content, file.key, file.val().type, users, file.val().key)
       } else {
         forCloud.files.createSharedFile(file.val().content, file.key, file.val().type, users)
       }
@@ -442,7 +442,7 @@ const storageRef = firebase.storage().ref();
 
     if (path == '') {
       path = '/'
-    } 
+    }
 
     let reference;
 

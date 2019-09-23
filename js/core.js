@@ -86,16 +86,19 @@ forCloud.files = {}
     return forCloud.files.currentFileContext.child(path).child(name).child('content').set(content)
   }
 
-  async function createSharedFile(content, path, type, key, users) {
+  async function createSharedFile(content, path, type,users, key) {
     if (typeof key !== "undefined") {
       firebase.database().ref('shared-files').child('shared').child('files').child(path).child('key').set(key)
     }
-    firebase.database().ref('shared-files').child('shared').child('files').child(path).child('type').set(type)
-    firebase.database().ref('shared-files').child('shared').child('files').child(path).child('content').set(content)
 
-    users.forEach(function (user) {
-      firebase.database().ref('shared-files').child('shared').child('files').child(path).child('users').child(user).set('true')
-    })
+    if (typeof users !== "undefined") {
+      users.forEach(function (user) {
+        firebase.database().ref('shared-files').child('shared').child('files').child(path).child('users').child(user).set('true')
+      })
+    }
+    firebase.database().ref('shared-files').child('shared').child('files').child(path).child('type').set(type)
+    return firebase.database().ref('shared-files').child('shared').child('files').child(path).child('content').set(content)
+
   }
 
   // Misc. functions.
