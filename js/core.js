@@ -69,36 +69,27 @@ forCloud.files = {}
     return (await getUser()).email
   }
 
+  async function getUserid() {
+    return (await getUser()).uid
+  }
+
   async function getUsername() {
     return parseEmail(await getUserEmail())
   }
 
-  async function createFile(name, content, path, type, key, users) {
-    if (typeof key !== "undefined") {
-      forCloud.files.currentFileContext.child(path).child(name).child('key').set(key)
-    }
-    if (typeof users !== "undefined") {
-      Object.keys(users).forEach(function (user) {
-        forCloud.files.currentFileContext.child(path).child(name).child('users').child(user).set('true')
-      })
-    }
-    forCloud.files.currentFileContext.child(path).child(name).child('type').set(type)
-    return forCloud.files.currentFileContext.child(path).child(name).child('content').set(content)
-  }
+  async function createFile(name, content, path, type, keys, users) {
+    const title = name
+    const fileObject = { title, content, keys, type, users }
 
-  async function createSharedFile(content, path, type,users, key) {
-    if (typeof key !== "undefined") {
-      firebase.database().ref('shared-files').child('shared').child('files').child(path).child('key').set(key)
+    if (!fileObject.keys) {
+      delete fileObject.keys
     }
 
-    if (typeof users !== "undefined") {
-      users.forEach(function (user) {
-        firebase.database().ref('shared-files').child('shared').child('files').child(path).child('users').child(user).set('true')
-      })
+    if (!fileObject.users) {
+      delete fileObject.users
     }
-    firebase.database().ref('shared-files').child('shared').child('files').child(path).child('type').set(type)
-    return firebase.database().ref('shared-files').child('shared').child('files').child(path).child('content').set(content)
 
+    forCloud.files.currentFileContext.child(path).push(fileObject)
   }
 
   // Misc. functions.
@@ -139,6 +130,22 @@ forCloud.files = {}
 
   function encrypt(content, key) {
     return CryptoJS.AES.encrypt(content, key) + ""
+  }
+
+  async function encryptPublic(content, user) {
+    return new Promise((resolve, reject) => {
+      firebase.database().ref('/keys').child(user).on('value', (snapshot) => {
+        let encrypt = new JSEncrypt()
+        encrypt.setPublicKey(snapshot.val())
+        resolve(encrypt.encrypt(content))
+      })
+    })
+  }
+
+  function decryptPrivate(content) {
+    let decrypt = new JSEncrypt()
+    decrypt.setPrivateKey(forCloud.get('key'))
+    return decrypt.decrypt(content);
   }
 
   function decrypt(content, key) {
@@ -195,17 +202,22 @@ forCloud.files = {}
   forCloud.getUser = getUser
   forCloud.getUserEmail = getUserEmail
   forCloud.getUsername = getUsername
+  forCloud.getUserid = getUserid
   forCloud.createIcon = createIcon
+  forCloud.decryptPrivate = decryptPrivate
+  forCloud.encryptPublic = encryptPublic
+
 
   forCloud.convertTime = convertTime
   forCloud.selectFile = selectFile
   forCloud.pickColor = pickColor
   forCloud.files.createFile = createFile
-  forCloud.files.createSharedFile = createSharedFile
   forCloud.getQueryVariable = getQueryVariable
   forCloud.files.currentFileContext = currentFileContext
 }
 
 firebase.auth().onAuthStateChanged(() => {
-  forCloud.files.currentFileContext = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files')
+  if (firebase.database) {
+    forCloud.files.currentFileContext = firebase.database().ref('/users').child(firebase.auth().currentUser.uid).child('files')
+  }
 })

@@ -201,9 +201,9 @@ const formulaVariables = {}
         var orderA = 'A'.charCodeAt(0);
         var orderZ = 'Z'.charCodeAt(0);
         var length = orderZ - orderA + 1;
-      
+
         var string = "";
-        while(number >= 0) {
+        while (number >= 0) {
             string = String.fromCharCode(number % length + orderA) + string;
             number = Math.floor(number / length) - 1;
         }
@@ -212,7 +212,7 @@ const formulaVariables = {}
 
     function updateCells() {
         for (const cell of $('sheets-editor').getElementsByTagName('th')) {
-                formulaVariables[`${forCloud.sheets.colName([...cell.parentElement.children].indexOf(cell))}${[...cell.parentElement.parentElement.children].indexOf(cell.parentElement) + 1}`] = cell.textContent
+            formulaVariables[`${forCloud.sheets.colName([...cell.parentElement.children].indexOf(cell))}${[...cell.parentElement.parentElement.children].indexOf(cell.parentElement) + 1}`] = cell.textContent
         }
 
         for (const cell of $('sheets-editor').getElementsByTagName('th')) {
@@ -242,13 +242,22 @@ const formulaVariables = {}
 
     async function saveSpreadsheet() {
         if (forCloud.getQueryVariable('file') !== false) {
-            firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('key').on('value', (snapshot) => {
-                firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt($('sheets-editor').innerHTML, snapshot.val()))
+            firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('keys').on('value', (snapshot) => {
+                forCloud.getUsername().then((userName) => {
+                    let sheetsKey = forCloud.decryptPrivate(snapshot.child(userName).val())
+                    firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt($('sheets-editor').innerHTML, sheetsKey))
+                })
             })
         } else {
-            let newKey = forCloud.uuid()
-            forCloud.files.createFile($('spreadsheet-name').value, forCloud.encrypt($('sheets-editor').innerHTML, newKey), '/', 'spreadsheet', newKey).then(() => {
-                location.assign('../files/index.html')
+            forCloud.getUsername().then((userName) => {
+                let keys = {}
+                let newKey = forCloud.uuid()
+                forCloud.encryptPublic(newKey, userName).then((result) => {
+                    keys[userName] = result
+                    forCloud.files.createFile($('spreadsheet-name').value, forCloud.encrypt($('sheets-editor').innerHTML, newKey), '/', 'spreadsheet', keys).then(() => {
+                        location.assign('../files/index.html')
+                    })
+                })
             })
         }
     }
@@ -288,7 +297,10 @@ $('sheets-editor').addEventListener('input', async () => {
 firebase.auth().onAuthStateChanged(() => {
     if (forCloud.getQueryVariable('file') !== false) {
         firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).on('value', (snapshot) => {
-            $('sheets-editor').innerHTML = forCloud.decrypt(snapshot.child('content').val(), snapshot.child('key').val())
+            forCloud.getUsername().then((userName) => {
+                let key = snapshot.child('keys').child(userName).val()
+                $('sheets-editor').innerHTML = forCloud.decrypt(snapshot.child('content').val(), forCloud.decryptPrivate(key))
+            })
 
             for (const cell of $('sheets-editor').getElementsByTagName('th')) {
 
@@ -311,24 +323,24 @@ firebase.auth().onAuthStateChanged(() => {
             $('spreadsheet-name-label').style.display = 'none'
         })
     } else {
-        forCloud.sheets.updateDeleteButton()
+    forCloud.sheets.updateDeleteButton()
 
-        for (const cell of $('sheets-editor').getElementsByTagName('th')) {
+    for (const cell of $('sheets-editor').getElementsByTagName('th')) {
 
-            cell.addEventListener('dblclick', async () => {
-                const formula = window.prompt('Formula', cell.dataset.formula ? cell.dataset.formula : '')
+        cell.addEventListener('dblclick', async () => {
+            const formula = window.prompt('Formula', cell.dataset.formula ? cell.dataset.formula : '')
 
-                if (formula === '') {
-                    if (confirm('Are you sure you want to delete this formula?')) {
-                        delete cell.dataset.formula
-                    }
-                } else if (formula) {
-                    cell.dataset.formula = formula
-                    forCloud.sheets.updateCells()
+            if (formula === '') {
+                if (confirm('Are you sure you want to delete this formula?')) {
+                    delete cell.dataset.formula
                 }
-            })
-        }
+            } else if (formula) {
+                cell.dataset.formula = formula
+                forCloud.sheets.updateCells()
+            }
+        })
     }
+}
 
-    forCloud.sheets.updateCells()
+forCloud.sheets.updateCells()
 })

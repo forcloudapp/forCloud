@@ -192,13 +192,22 @@ let slideshow = ["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"]
   async function saveSlideshow() {
     forCloud.slides.savePosition()
     if (forCloud.getQueryVariable('file') !== false) {
-      firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('key').on('value', (snapshot) => {
-        firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt(JSON.stringify(slideshow), snapshot.val()))
+      firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('keys').on('value', (snapshot) => {
+        forCloud.getUsername().then((userName) => {
+          let slidesKey = forCloud.decryptPrivate(snapshot.child(userName).val())
+          firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).child('content').set(forCloud.encrypt(JSON.stringify(slideshow), slidesKey))
+        })
       })
     } else {
-      let newKey = forCloud.uuid()
-      forCloud.files.createFile($('slideshow-name').value, forCloud.encrypt(JSON.stringify(slideshow), newKey), '/', 'slideshow', newKey).then(() => {
-        location.assign('../files/index.html')
+      forCloud.getUsername().then((userName) => {
+        let keys = {}
+        let newKey = forCloud.uuid()
+        forCloud.encryptPublic(newKey, userName).then((result) => {
+          keys[userName] = result
+          forCloud.files.createFile($('slideshow-name').value, forCloud.encrypt(JSON.stringify(slideshow), newKey), '/', 'slideshow', keys).then(() => {
+            location.assign('../files/index.html')
+          })
+        })
       })
     }
   }
@@ -303,8 +312,11 @@ firebase.auth().onAuthStateChanged(() => {
   if (forCloud.getQueryVariable('file') !== false) {
     $('slideshow-name-div').style.display = 'none'
     firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).on('value', (snapshot) => {
-      slideshow = JSON.parse(forCloud.decrypt(snapshot.child('content').val(), snapshot.child('key').val()))
-      forCloud.slides.updateSlide()
+      forCloud.getUsername().then((userName) => {
+        let key = snapshot.child('keys').child(userName).val()
+        slideshow = JSON.parse(forCloud.decrypt(snapshot.child('content').val(), forCloud.decryptPrivate(key)))
+        forCloud.slides.updateSlide()
+      })
       for (let i = 0; i < document.getElementsByClassName('edit-slides').length; i++) {
         document.getElementsByClassName('edit-slides')[i].onmousedown = function () {
           forCloud.slides.beginDrag(this);
