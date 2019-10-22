@@ -14,7 +14,7 @@ $('sign-up').addEventListener('click', async (event) => {
         let privateKey = keys.getPrivateKeyB64()
         forCloud.store('key', privateKey)
         forCloud.getUserid().then((userId) => {
-          firebase.database().ref('/keys').child($('username').value).set(publicKey)
+          firebase.database().ref('/keys').child($('username').value.toLowerCase()).set(publicKey)
           firebase.database().ref('/users').child(userId).child('privateKey').set(forCloud.encrypt(privateKey, $('password').value))
           location.assign('../chat/index.html')
         })

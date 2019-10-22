@@ -38,7 +38,10 @@ firebase.auth().onAuthStateChanged(() => {
         firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).on('value', (snapshot) => {
             forCloud.getUserid().then((userId) => {
                 forCloud.getUsername().then((userName) => {
-                    let key = snapshot.child('keys').child(userName).val()
+                    let key = snapshot.child('keys').child(userName.toLowerCase()).val()
+                    firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).on('child_changed', (child) => {
+                        $('document-editor').innerHTML = forCloud.decrypt(snapshot.child('content').val(), forCloud.decryptPrivate(key))
+                    })
                     $('document-editor').innerHTML = forCloud.decrypt(snapshot.child('content').val(), forCloud.decryptPrivate(key))
                 })
                 $('document-name-label').style.display = 'none'

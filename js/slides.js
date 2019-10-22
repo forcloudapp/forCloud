@@ -313,7 +313,10 @@ firebase.auth().onAuthStateChanged(() => {
     $('slideshow-name-div').style.display = 'none'
     firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).on('value', (snapshot) => {
       forCloud.getUsername().then((userName) => {
-        let key = snapshot.child('keys').child(userName).val()
+        let key = snapshot.child('keys').child(userName.toLowerCase()).val()
+        firebase.database().ref(decodeURI(forCloud.getQueryVariable('file')).split(',').join('/')).on('child_changed', (child) => {
+          slideshow = JSON.parse(forCloud.decrypt(snapshot.child('content').val(), forCloud.decryptPrivate(key)))
+        })
         slideshow = JSON.parse(forCloud.decrypt(snapshot.child('content').val(), forCloud.decryptPrivate(key)))
         forCloud.slides.updateSlide()
       })

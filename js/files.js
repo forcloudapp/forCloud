@@ -55,7 +55,7 @@ const storageRef = firebase.storage().ref();
             forCloud.getUsername().then((userName) => {
               let decryptedKey = forCloud.decryptPrivate(file.val().keys[userName])
               forCloud.encryptPublic(decryptedKey, user).then((result) => {
-                firebase.database().ref('shared-files').child('shared').child('files').child(path).child('keys').child(user).set(result)
+                firebase.database().ref('shared-files').child('shared').child('files').child(path).child('keys').child(user.toLowerCase()).set(result)
               })
             })
           })

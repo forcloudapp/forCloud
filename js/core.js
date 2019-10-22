@@ -74,7 +74,7 @@ forCloud.files = {}
   }
 
   async function getUsername() {
-    return parseEmail(await getUserEmail())
+    return parseEmail(await getUserEmail()).toLowerCase()
   }
 
   async function createFile(name, content, path, type, keys, users) {
