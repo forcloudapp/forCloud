@@ -193,7 +193,14 @@ const storageRef = firebase.storage().ref();
         console.log(error)
         $('files-upload-bar').style.display = 'none'
       }, function () {
-        forCloud.files.createFile(fileName, filePath, '/', 'file')
+        forCloud.getUsername().then((userName) => {
+          let keys = {}
+          let newKey = forCloud.uuid()
+          forCloud.encryptPublic(newKey, userName).then((result) => {
+            keys[userName] = result
+            forCloud.files.createFile(fileName, forCloud.encrypt(filePath, newKey), '/', 'file', keys)
+          })
+        })
         forCloud.files.render('/')
         $('files-upload-bar').style.display = 'none'
       });
@@ -331,8 +338,15 @@ const storageRef = firebase.storage().ref();
             } else if (file.val().type === 'spreadsheet') {
               location.assign('../sheets/index.html?file=' + encodeURI(file.ref_.path.pieces_))
             } else if (file.val().type === 'file') {
-              storageRef.child(file.val().content).getDownloadURL().then(url => {
-                window.open(url)
+              firebase.database().ref(file.ref_.path.pieces_.join('/')).on('value', (snapshot) => {
+                forCloud.getUserid().then((userId) => {
+                  forCloud.getUsername().then((userName) => {
+                    let key = snapshot.child('keys').child(userName.toLowerCase()).val()
+                    storageRef.child(forCloud.decrypt(file.val().content, forCloud.decryptPrivate(key))).getDownloadURL().then(url => {
+                      window.open(url)
+                    })
+                  })
+                })
               })
             } else if (file.val().type === 'slideshow') {
               location.assign('../slides/index.html?file=' + encodeURI(file.ref_.path.pieces_))
@@ -417,8 +431,15 @@ const storageRef = firebase.storage().ref();
               } else if (file.val().type === 'spreadsheet') {
                 location.assign('../sheets/index.html?file=' + encodeURI(file.ref_.path.pieces_))
               } else if (file.val().type === 'file') {
-                storageRef.child(file.val().content).getDownloadURL().then(url => {
-                  window.open(url)
+                firebase.database().ref(file.ref_.path.pieces_.join('/')).on('value', (snapshot) => {
+                  forCloud.getUserid().then((userId) => {
+                    forCloud.getUsername().then((userName) => {
+                      let key = snapshot.child('keys').child(userName.toLowerCase()).val()
+                      storageRef.child(forCloud.decrypt(file.val().content, forCloud.decryptPrivate(key))).getDownloadURL().then(url => {
+                        window.open(url)
+                      })
+                    })
+                  })
                 })
               } else if (file.val().type === 'slideshow') {
                 location.assign('../slides/index.html?file=' + encodeURI(file.ref_.path.pieces_))
